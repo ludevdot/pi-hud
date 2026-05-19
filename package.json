@@ -18,8 +18,11 @@
   ],
   "files": [
     "extensions",
+    "skills",
     "assets",
     "README.md",
+    "CHANGELOG.md",
+    "RELEASING.md",
     "LICENSE",
     "scripts"
   ],
@@ -27,12 +30,18 @@
     "test": "vitest --run",
     "pack:dry": "pnpm pack --dry-run",
     "verify:package": "node scripts/verify-package-files.mjs",
+    "changeset": "changeset",
+    "version:changeset": "changeset version",
+    "release:check": "pnpm run pack:dry",
     "prepack": "pnpm test && pnpm run verify:package",
     "prepublishOnly": "pnpm test && pnpm run verify:package"
   },
   "pi": {
     "extensions": [
       "./extensions"
+    ],
+    "skills": [
+      "./skills"
     ],
     "image": "https://cdn.jsdelivr.net/npm/pi-hud/assets/pi-hud.jpeg"
   },
@@ -42,12 +51,13 @@
     "@earendil-works/pi-tui": "*"
   },
   "devDependencies": {
+    "@changesets/cli": "2.31.0",
     "@earendil-works/pi-ai": "0.74.1",
     "@earendil-works/pi-coding-agent": "0.74.1",
     "@earendil-works/pi-tui": "0.74.1",
-    "vitest": "3.2.4",
     "tsx": "4.21.0",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "vitest": "3.2.4"
   },
   "engines": {
     "node": ">=20.0.0"

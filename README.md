@@ -123,6 +123,12 @@ For example, a project-local `.mcp.json` can make a server appear in the HUD eve
 
 `pi-mcp-adapter` does not currently expose a public cross-extension status API for `pi-hud` to consume. If such an API becomes available, `pi-hud` can show live states such as connected, cached, failed, needs-auth, or not connected.
 
+## Release notes
+
+User-facing changes are tracked in [CHANGELOG.md](CHANGELOG.md). Maintainer release steps are documented in [RELEASING.md](RELEASING.md).
+
+The package also ships a `release` skill so installed Pi agents can follow the project release workflow with the same checklist.
+
 ## Inspiration
 
 `pi-hud` is inspired by [sub-agent-statusline](https://github.com/Joaquinvesapa/sub-agent-statusline).
