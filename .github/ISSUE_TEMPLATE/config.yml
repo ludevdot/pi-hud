@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Questions and support
+    url: https://github.com/ludevdot/pi-hud/issues
+    about: Search existing issues first, then open a question if you still need help.

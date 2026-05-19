@@ -1,0 +1,49 @@
+name: Feature request
+description: Suggest an improvement or new capability for pi-hud
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement. Please search existing issues before opening a new one.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem would this solve?
+      placeholder: Describe the workflow, pain point, or missing capability.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What would you like pi-hud to do?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Have you tried another workflow or workaround?
+    validations:
+      required: false
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and impact
+      description: Who benefits, and how often would this be used?
+    validations:
+      required: false
+  - type: dropdown
+    id: contribution
+    attributes:
+      label: Would you like to help implement or test this?
+      options:
+        - Yes, I can implement it
+        - Yes, I can test it
+        - Maybe, with guidance
+        - Not right now
+    validations:
+      required: false

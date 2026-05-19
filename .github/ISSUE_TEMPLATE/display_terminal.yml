@@ -1,0 +1,106 @@
+name: Display or terminal rendering problem
+description: Report layout, overlay, copy/paste, terminal, or rendering issues
+title: "display: "
+labels: ["type:bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for HUD layout, terminal rendering, overlay, copy/paste, or display glitches. Please search existing issues first.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What display or terminal behavior looks wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include the terminal size and the exact HUD state if it matters.
+      placeholder: |
+        1. Open Pi in...
+        2. Enable pi-hud...
+        3. Resize terminal to...
+        4. See...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: input
+    id: terminal-size
+    attributes:
+      label: Terminal size
+      description: Run `stty size` or provide columns x rows if known.
+      placeholder: "40 120 or 120x40"
+    validations:
+      required: false
+  - type: input
+    id: os-terminal
+    attributes:
+      label: OS and terminal
+      placeholder: "macOS 15, iTerm2 / Terminal.app / Warp / ..."
+    validations:
+      required: true
+  - type: input
+    id: pi-version
+    attributes:
+      label: Pi version
+      placeholder: "pi --version"
+    validations:
+      required: false
+  - type: input
+    id: pi-hud-version
+    attributes:
+      label: pi-hud version
+      placeholder: "npm list -g pi-hud or project package version"
+    validations:
+      required: false
+  - type: dropdown
+    id: install-scope
+    attributes:
+      label: Install scope
+      options:
+        - Global
+        - Project-local
+        - Not sure
+    validations:
+      required: false
+  - type: textarea
+    id: hud-settings
+    attributes:
+      label: HUD settings
+      description: Include relevant width, position, visibility, compact, shortcut, or MCP settings.
+      render: json
+    validations:
+      required: false
+  - type: dropdown
+    id: mcp-adapter
+    attributes:
+      label: Is pi-mcp-adapter installed?
+      description: Useful for MCP status or tool display issues.
+      options:
+        - Yes
+        - No
+        - Not sure
+        - Not relevant
+    validations:
+      required: false
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or recordings
+      description: Drag and drop screenshots, terminal recordings, or copy/paste output here.
+    validations:
+      required: false
