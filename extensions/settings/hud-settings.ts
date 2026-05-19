@@ -114,7 +114,7 @@ function normalizeHudSettings(input: Record<string, unknown>, base: HudSettings)
 		shortcut: typeof input.shortcut === "string" ? normalizeShortcut(input.shortcut, base.shortcut) : base.shortcut,
 		minimizeShortcut: typeof input.minimizeShortcut === "string" ? normalizeShortcut(input.minimizeShortcut, base.minimizeShortcut) : base.minimizeShortcut,
 		autoCompactWhileStreaming: typeof input.autoCompactWhileStreaming === "boolean" ? input.autoCompactWhileStreaming : base.autoCompactWhileStreaming,
-		expandedWidth: normalizePositiveInteger(input.expandedWidth, base.expandedWidth, 20, 80),
+		expandedWidth: normalizePositiveInteger(input.expandedWidth, base.expandedWidth, 20, 300),
 		compactWidth: normalizePositiveInteger(input.compactWidth, base.compactWidth, 16, 60),
 		minTerminalWidth: normalizePositiveInteger(input.minTerminalWidth, base.minTerminalWidth, 40, 300),
 		margin: normalizeMargin(input.margin, base.margin),

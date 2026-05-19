@@ -2,4 +2,4 @@
 "pi-hud": patch
 ---
 
-Increase the default minimum terminal width so the HUD stays hidden until there is enough room to render comfortably.
+Increase the default expanded HUD width while keeping the narrow-terminal hide threshold at 90 columns.
