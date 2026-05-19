@@ -7,3 +7,5 @@ coverage/
 .vitest/
 # Local Pi runtime state
 .atl/
+/.pi-lens/
+/context.md

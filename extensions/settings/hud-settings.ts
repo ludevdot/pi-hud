@@ -128,7 +128,7 @@ function normalizePosition(value: unknown, fallback: OverlayAnchor): OverlayAnch
 function normalizeShortcut(value: string, fallback: string): string {
 	const shortcut = value.trim();
 	const parts = shortcut.toLowerCase().split("+");
-	const key = parts.at(-1);
+	const key = parts[parts.length - 1];
 	if (key === "enter" || key === "return" || shortcut.toLowerCase() === "alt+m") return fallback;
 	if (parts.includes("ctrl") && (key === "m" || key === "j")) return fallback;
 	return shortcut;
