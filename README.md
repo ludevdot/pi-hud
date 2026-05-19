@@ -1,8 +1,18 @@
 ![pi-hud](assets/pi-hud.jpeg)
 
-Persistent right-side HUD for [Pi](https://pi.dev).
+# pi-hud
+
+[![npm](https://img.shields.io/npm/v/pi-hud?color=blue)](https://www.npmjs.com/package/pi-hud)
+[![pi package](https://img.shields.io/badge/Pi-package-6f42c1)](https://pi.dev/packages/pi-hud?name=hud)
+[![CI](https://github.com/ludevdot/pi-hud/actions/workflows/ci.yml/badge.svg)](https://github.com/ludevdot/pi-hud/actions/workflows/ci.yml)
+[![license](https://img.shields.io/npm/l/pi-hud?color=blue)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/ludevdot/pi-hud?style=flat&color=yellow)](https://github.com/ludevdot/pi-hud/stargazers)
+
+Persistent right-side HUD for [Pi](https://pi.dev), published as a Pi package at [pi.dev/packages/pi-hud](https://pi.dev/packages/pi-hud?name=hud).
 
 It shows the current session, model/context usage, subagent activity, project path, and git branch without stealing focus from the editor.
+
+![pi-hud session panel](assets/hud.png)
 
 ## Features
 
