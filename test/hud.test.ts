@@ -42,14 +42,14 @@ describe("pi-hud extension", () => {
 		const initialOverlayOptions = getOverlayOptions(capturedOptions[0]);
 		expect(initialOverlayOptions).toMatchObject({
 			anchor: "top-right",
-			width: 200,
+			width: 42,
 			maxHeight: "100%",
 			nonCapturing: true,
 		});
 		const overlayOptions = initialOverlayOptions;
 		expect(overlayOptions.visible?.(89, 40)).toBe(false);
 		expect(overlayOptions.visible?.(90, 40)).toBe(true);
-		const rendered = capturedComponents[0]?.render(200).join("\n");
+		const rendered = capturedComponents[0]?.render(42).join("\n");
 		expect(rendered).toContain("12.0k tokens");
 		expect(rendered).toContain("6.0% used");
 		expect(rendered).toContain("branch main");
@@ -62,8 +62,8 @@ describe("pi-hud extension", () => {
 		const { commands, ctx, eventHandlers, capturedOptions, capturedComponents } = createHarness();
 
 		await commands.get("hud")!.handler("", ctx);
-		expect(getOverlayOptions(capturedOptions[0]).width).toBe(200);
-		let rendered = capturedComponents[0]!.render(200).join("\n");
+		expect(getOverlayOptions(capturedOptions[0]).width).toBe(42);
+		let rendered = capturedComponents[0]!.render(42).join("\n");
 		expect(rendered).toContain("Pi HUD");
 		expect(rendered).toContain("Model Name · 6.0% ctx");
 
@@ -71,7 +71,7 @@ describe("pi-hud extension", () => {
 			await handler(createAssistantMessageEvent("message_update"), ctx);
 		}
 
-		expect(getOverlayOptions(capturedOptions[0]).width).toBe(200);
+		expect(getOverlayOptions(capturedOptions[0]).width).toBe(42);
 
 		for (const handler of eventHandlers.get("turn_start") ?? []) {
 			await handler({ type: "turn_start" }, ctx);
@@ -92,8 +92,8 @@ describe("pi-hud extension", () => {
 			await handler({ type: "turn_end" }, ctx);
 		}
 
-		expect(getOverlayOptions(capturedOptions[0]).width).toBe(200);
-		rendered = capturedComponents[0]!.render(200).join("\n");
+		expect(getOverlayOptions(capturedOptions[0]).width).toBe(42);
+		rendered = capturedComponents[0]!.render(42).join("\n");
 		expect(rendered).toContain("Pi HUD");
 	});
 
@@ -167,7 +167,7 @@ describe("pi-hud extension", () => {
 		const { commands, shortcuts, ctx, capturedOptions, capturedComponents, requestRender } = createHarness();
 
 		await commands.get("hud")!.handler("", ctx);
-		expect(getOverlayOptions(capturedOptions[0]).width).toBe(200);
+		expect(getOverlayOptions(capturedOptions[0]).width).toBe(42);
 
 		await shortcuts.get("ctrl+h")!.handler(ctx);
 		expect(requestRender).toHaveBeenCalled();
@@ -175,8 +175,8 @@ describe("pi-hud extension", () => {
 		expect(capturedComponents[0]!.render(26).join("\n")).toContain("HUD");
 
 		await shortcuts.get("ctrl+h")!.handler(ctx);
-		expect(getOverlayOptions(capturedOptions[0]).width).toBe(200);
-		expect(capturedComponents[0]!.render(200).join("\n")).toContain("Pi HUD");
+		expect(getOverlayOptions(capturedOptions[0]).width).toBe(42);
+		expect(capturedComponents[0]!.render(42).join("\n")).toContain("Pi HUD");
 	});
 
 	test("minimize shortcut can expand during an auto-compact assistant turn", async () => {
@@ -189,8 +189,8 @@ describe("pi-hud extension", () => {
 		expect(getOverlayOptions(capturedOptions[0]).width).toBe(26);
 
 		await shortcuts.get("ctrl+h")!.handler(ctx);
-		expect(getOverlayOptions(capturedOptions[0]).width).toBe(200);
-		expect(capturedComponents[0]!.render(200).join("\n")).toContain("Pi HUD");
+		expect(getOverlayOptions(capturedOptions[0]).width).toBe(42);
+		expect(capturedComponents[0]!.render(42).join("\n")).toContain("Pi HUD");
 	});
 
 	test("toggles by hiding the captured handle and recreates a fresh overlay", async () => {

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.8
+
+### Patch Changes
+
+- Restore the initial narrow expanded HUD default so the panel no longer spans most of wide terminals by default.
+
 ## 0.1.7
 
 ### Patch Changes

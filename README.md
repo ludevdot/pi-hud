@@ -116,7 +116,7 @@ Defaults:
     "shortcut": "f2",
     "minimizeShortcut": "ctrl+h",
     "autoCompactWhileStreaming": true,
-    "expandedWidth": 200,
+    "expandedWidth": 42,
     "compactWidth": 26,
     "minTerminalWidth": 90,
     "margin": { "top": 1, "right": 1, "bottom": 1 }
@@ -194,16 +194,16 @@ Use this if layout changes during assistant turns are distracting. Manual minimi
 }
 ```
 
-#### Narrower expanded panel
+#### Wider expanded panel
 
-Use this if you want the expanded HUD to take less horizontal space while keeping the default compact width.
+Use this on wide monitors to reduce truncation in the expanded HUD.
 
 ```json
 {
   "hud": {
-    "expandedWidth": 80,
+    "expandedWidth": 56,
     "compactWidth": 26,
-    "minTerminalWidth": 90
+    "minTerminalWidth": 110
   }
 }
 ```
