@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.6
+
+### Patch Changes
+
+- 5ba6cb5: Improve package metadata for npm, GitHub, and Pi package discovery.
+- 114da9d: Add a first 60 seconds quick start to help new users validate the HUD after installation.
+
 ## 0.1.5
 
 ### Patch Changes

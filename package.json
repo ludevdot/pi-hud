@@ -1,6 +1,6 @@
 {
   "name": "pi-hud",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Persistent HUD extension for Pi showing project, context, MCP, git, and subagent status.",
   "type": "module",
   "license": "MIT",
