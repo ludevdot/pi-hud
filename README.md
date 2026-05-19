@@ -43,6 +43,37 @@ For project-local install:
 pi install -l npm:pi-hud
 ```
 
+## First 60 seconds
+
+Use this quick path to confirm `pi-hud` is installed and responding:
+
+1. Install it globally or for the current project:
+
+   ```bash
+   pi install npm:pi-hud
+   # or: pi install -l npm:pi-hud
+   ```
+
+2. Start a new Pi session, or reload the current one:
+
+   ```text
+   /reload
+   ```
+
+3. Confirm the HUD appears on the right side. If it is hidden, toggle it:
+
+   ```text
+   /hud
+   ```
+
+4. Try one safe setting change:
+
+   ```text
+   /hud-settings position bottom-right
+   ```
+
+Global settings are stored in `~/.pi/agent/settings.json`; project-local settings live in `.pi/settings.json` and override global values.
+
 ## Try locally
 
 From this repository:
@@ -192,12 +223,12 @@ Shortcut changes require `/reload` because shortcuts are registered when the ext
 
 The HUD shows configured MCP server names, not live connection status. It reads global and project MCP config paths and renders the configured names when `pi-mcp-adapter` is installed.
 
-| Situation | What the HUD shows | Where to check live status |
-| --- | --- | --- |
-| `pi-mcp-adapter` is not installed | No MCP section | Install the adapter before checking MCP state in Pi. |
-| Adapter installed and MCP configs exist | Configured server names | Use `mcp({})` or `/mcp`. |
-| Server configured but not connected | The server name can still appear | Use `mcp({})` or `/mcp`. |
-| Connected, failed, cached, or auth state | Not currently available in the HUD | Use `mcp({})` or `/mcp`. |
+| Situation                                | What the HUD shows                 | Where to check live status                           |
+| ---------------------------------------- | ---------------------------------- | ---------------------------------------------------- |
+| `pi-mcp-adapter` is not installed        | No MCP section                     | Install the adapter before checking MCP state in Pi. |
+| Adapter installed and MCP configs exist  | Configured server names            | Use `mcp({})` or `/mcp`.                             |
+| Server configured but not connected      | The server name can still appear   | Use `mcp({})` or `/mcp`.                             |
+| Connected, failed, cached, or auth state | Not currently available in the HUD | Use `mcp({})` or `/mcp`.                             |
 
 For example, a project-local `.mcp.json` can make a server appear in the HUD even when that server is not currently connected. Use `mcp({})` or `/mcp` for live MCP status.
 
