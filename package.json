@@ -19,7 +19,8 @@
   "files": [
     "extensions",
     "skills",
-    "assets",
+    "assets/pi-hud.jpeg",
+    "assets/hud.png",
     "README.md",
     "CHANGELOG.md",
     "RELEASING.md",
