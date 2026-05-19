@@ -347,7 +347,7 @@ class HudComponent implements Component {
 		}
 
 		if (mcpAdapter.available) {
-			this.pushSection(lines, innerWidth, "MCP");
+			this.pushSection(lines, innerWidth, "Configured MCPs");
 			if (mcpAdapter.servers.length === 0) {
 				this.pushLine(lines, innerWidth, this.theme.fg("dim", "adapter installed"));
 			} else {

@@ -129,13 +129,13 @@ describe("pi-hud extension", () => {
 		expect(notify).toHaveBeenCalledWith("Usage: /hud-settings position|shortcut|minimizeShortcut|autoCompactWhileStreaming|expandedWidth|compactWidth|minTerminalWidth <value>", "warning");
 	});
 
-	test("renders MCP servers only when the adapter package is installed", async () => {
+	test("renders configured MCP servers only when the adapter package is installed", async () => {
 		const { commands, ctx, capturedComponents } = createHarness({ mcpAdapter: true });
 
 		await expectCommandReturnsPromptly(commands.get("hud")!, ctx);
 
 		const rendered = capturedComponents[0]?.render(42).join("\n");
-		expect(rendered).toContain("MCP");
+		expect(rendered).toContain("Configured MCPs");
 		expect(rendered).toContain("filesystem");
 		expect(rendered).toContain("github");
 	});

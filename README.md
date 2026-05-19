@@ -29,7 +29,7 @@ It shows the current session, model/context usage, subagent activity, project pa
   - token/context count when available.
 - Session context usage and cost.
 - Project path and current git branch.
-- MCP server names when `pi-mcp-adapter` is installed.
+- Configured MCP server names when `pi-mcp-adapter` is installed.
 
 ## Install
 
@@ -108,10 +108,20 @@ Shortcut changes require `/reload` because shortcuts are registered when the ext
 
 ## Notes
 
-- MCP servers are shown only when Pi has [`pi-mcp-adapter`](https://pi.dev/packages/pi-mcp-adapter?name=pi-mcp-adap) installed; config files alone do not enable the section.
+- Configured MCP servers are shown only when Pi has [`pi-mcp-adapter`](https://pi.dev/packages/pi-mcp-adapter?name=pi-mcp-adap) installed; config files alone do not enable the section.
 - Subagent status is based on Pi extension events and `pi-subagents` tool/result shapes when available.
 - The HUD auto-compacts for the full assistant turn and expands when the turn ends, instead of changing state on each reasoning update.
 - The overlay is hidden on narrow terminals under the configured `minTerminalWidth`.
+
+## Known limitations
+
+### MCP connection status
+
+The HUD shows configured MCP server names, not live connection status. It reads global and project MCP config paths and renders the configured names when `pi-mcp-adapter` is installed.
+
+For example, a project-local `.mcp.json` can make a server appear in the HUD even when that server is not currently connected. Use `mcp({})` or `/mcp` for live MCP status.
+
+`pi-mcp-adapter` does not currently expose a public cross-extension status API for `pi-hud` to consume. If such an API becomes available, `pi-hud` can show live states such as connected, cached, failed, needs-auth, or not connected.
 
 ## Inspiration
 
