@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4
+
+### Patch Changes
+
+- da8c866: Add GitHub issue templates for bug reports, feature requests, and display or terminal rendering problems.
+- d3b1d52: Add Changesets-powered release documentation, changelog workflow, and a packaged release skill for Pi agents.
+- b7c73bf: Publish only the image assets needed by the README and Pi package listing.
+
 All notable user-facing changes to `pi-hud` are documented here.
 
 This project uses [Changesets](https://github.com/changesets/changesets) to prepare version bumps and changelog entries. Add a changeset for every user-visible change before release.
