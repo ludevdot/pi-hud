@@ -192,6 +192,13 @@ Shortcut changes require `/reload` because shortcuts are registered when the ext
 
 The HUD shows configured MCP server names, not live connection status. It reads global and project MCP config paths and renders the configured names when `pi-mcp-adapter` is installed.
 
+| Situation | What the HUD shows | Where to check live status |
+| --- | --- | --- |
+| `pi-mcp-adapter` is not installed | No MCP section | Install the adapter before checking MCP state in Pi. |
+| Adapter installed and MCP configs exist | Configured server names | Use `mcp({})` or `/mcp`. |
+| Server configured but not connected | The server name can still appear | Use `mcp({})` or `/mcp`. |
+| Connected, failed, cached, or auth state | Not currently available in the HUD | Use `mcp({})` or `/mcp`. |
+
 For example, a project-local `.mcp.json` can make a server appear in the HUD even when that server is not currently connected. Use `mcp({})` or `/mcp` for live MCP status.
 
 `pi-mcp-adapter` does not currently expose a public cross-extension status API for `pi-hud` to consume. If such an API becomes available, `pi-hud` can show live states such as connected, cached, failed, needs-auth, or not connected.
