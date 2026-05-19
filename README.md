@@ -118,7 +118,7 @@ Defaults:
     "autoCompactWhileStreaming": true,
     "expandedWidth": 42,
     "compactWidth": 26,
-    "minTerminalWidth": 90,
+    "minTerminalWidth": 200,
     "margin": { "top": 1, "right": 1, "bottom": 1 }
   }
 }

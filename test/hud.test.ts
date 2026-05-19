@@ -47,8 +47,8 @@ describe("pi-hud extension", () => {
 			nonCapturing: true,
 		});
 		const overlayOptions = initialOverlayOptions;
-		expect(overlayOptions.visible?.(89, 40)).toBe(false);
-		expect(overlayOptions.visible?.(90, 40)).toBe(true);
+		expect(overlayOptions.visible?.(199, 40)).toBe(false);
+		expect(overlayOptions.visible?.(200, 40)).toBe(true);
 		const rendered = capturedComponents[0]?.render(42).join("\n");
 		expect(rendered).toContain("12.0k tokens");
 		expect(rendered).toContain("6.0% used");
