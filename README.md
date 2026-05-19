@@ -104,6 +104,79 @@ Examples:
 /hud-settings autoCompactWhileStreaming off
 ```
 
+### Recommended profiles
+
+These profiles are copy-paste examples for your Pi settings file. They are documented examples, not built-in runtime presets. Each snippet is a partial override; unspecified HUD settings keep their default or previously configured values.
+
+#### Minimal / low-noise HUD
+
+Use this when screen space matters but you still want the HUD available.
+
+```json
+{
+  "hud": {
+    "expandedWidth": 32,
+    "compactWidth": 20,
+    "autoCompactWhileStreaming": true,
+    "minTerminalWidth": 80
+  }
+}
+```
+
+#### Small terminal
+
+Use this for narrow terminals. The HUD is still hidden when the terminal is narrower than `minTerminalWidth`.
+
+```json
+{
+  "hud": {
+    "expandedWidth": 30,
+    "compactWidth": 18,
+    "minTerminalWidth": 60,
+    "margin": { "top": 0, "right": 0, "bottom": 0 }
+  }
+}
+```
+
+#### Bottom-right placement
+
+Use this when top-right content conflicts with the HUD.
+
+```json
+{
+  "hud": {
+    "position": "bottom-right",
+    "margin": { "right": 1, "bottom": 1 }
+  }
+}
+```
+
+#### No auto-compact
+
+Use this if layout changes during assistant turns are distracting. Manual minimize/expand still works with `minimizeShortcut`.
+
+```json
+{
+  "hud": {
+    "autoCompactWhileStreaming": false
+  }
+}
+```
+
+#### Wider expanded panel
+
+Use this on wide monitors to reduce truncation in the expanded HUD.
+
+```json
+{
+  "hud": {
+    "expandedWidth": 56,
+    "compactWidth": 26,
+    "minTerminalWidth": 110
+  }
+}
+```
+
 Shortcut changes require `/reload` because shortcuts are registered when the extension loads. Do not bind HUD shortcuts to `enter`, `return`, `alt+m`, `ctrl+m`, `ctrl+shift+m`, `ctrl+j`, or `ctrl+shift+j`; those conflict with Pi or terminal input keys.
 
 ## Notes
