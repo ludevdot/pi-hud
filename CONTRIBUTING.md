@@ -1,58 +1,69 @@
 # Contributing
 
-Thanks for your interest in contributing to `opencode-subagent-statusline` ❤️
+Thanks for your interest in contributing to `pi-hud` ❤️
 
-We aim to keep contributions simple, respectful, and easy to review.
+`pi-hud` is a Pi package that provides a persistent HUD with context, project, git, MCP, and subagent status. We aim to keep contributions simple, respectful, and easy to review.
 
 ## Before You Start
 
-- Please check existing issues/PRs to avoid duplicate work.
-- Prefer an issue-first workflow for non-trivial changes (bugfixes/features).
-- For tiny docs fixes, feel free to open a PR directly.
+- Check existing issues and pull requests to avoid duplicate work.
+- Prefer an issue-first workflow for non-trivial changes.
+- Keep changes focused; small PRs are easier to review.
 
 ## Local Setup
 
 ### Requirements
 
-- Node.js 22.13+
-- pnpm 11.1.2
+Match the versions declared in `package.json`:
+
+- Node.js 20 or newer (`engines.node`)
+- pnpm 10.30.2 (`packageManager`)
 
 ### Install
 
 ```sh
-pnpm install --ignore-scripts
+pnpm install --frozen-lockfile
 ```
 
 ## Development Flow
 
-1. Fork the repository
-2. Create a branch from `main`
-3. Make your changes in small, reviewable commits
-4. Open a pull request with context and rationale
+1. Fork the repository or create a branch from `main`.
+2. Make a focused change with a conventional commit.
+3. Run the relevant checks below.
+4. Open a pull request with context, rationale, and validation evidence.
 
 Branch naming suggestions:
 
 - `feat/<short-description>`
 - `fix/<short-description>`
 - `docs/<short-description>`
+- `chore/<short-description>`
 
 ## Commit Messages
 
 Use **Conventional Commits**:
 
-- `feat: add runtime summary grouping`
-- `fix: handle missing token metadata`
+- `feat: add compact project status`
+- `fix: handle missing MCP adapter`
 - `docs: clarify local setup`
+- `chore: update package metadata`
 
 ## Quality Checks
 
-Run what exists in this repository before opening a PR:
+Run the checks that match your change:
 
 ```sh
-pnpm typecheck
+pnpm test
+pnpm run verify:package
+pnpm run pack:dry
 ```
 
-If additional test scripts are introduced, please run them as well.
+Guidance:
+
+- Use `pnpm test` for code changes.
+- Use `pnpm run verify:package` when package contents or metadata change.
+- Use `pnpm run pack:dry` before release or packaging-related PRs.
+- For docs-only changes, a careful review plus `pnpm test` is usually enough unless package metadata or published files change.
 
 ## Security & Secrets
 
@@ -67,7 +78,7 @@ Please include:
 - what changed
 - why it changed
 - how you validated it locally
-- screenshots/log snippets when UI or behavior changes are involved
+- screenshots or log snippets when UI or behavior changes are involved
 
 Keep PRs focused. Smaller PRs get reviewed faster and with better feedback.
 
