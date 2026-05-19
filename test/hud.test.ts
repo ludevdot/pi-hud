@@ -63,7 +63,9 @@ describe("pi-hud extension", () => {
 
 		await commands.get("hud")!.handler("", ctx);
 		expect(getOverlayOptions(capturedOptions[0]).width).toBe(42);
-		expect(capturedComponents[0]!.render(42).join("\n")).toContain("Session");
+		let rendered = capturedComponents[0]!.render(42).join("\n");
+		expect(rendered).toContain("Pi HUD");
+		expect(rendered).toContain("Model Name · 6.0% ctx");
 
 		for (const handler of eventHandlers.get("message_update") ?? []) {
 			await handler(createAssistantMessageEvent("message_update"), ctx);
@@ -76,9 +78,9 @@ describe("pi-hud extension", () => {
 		}
 
 		expect(getOverlayOptions(capturedOptions[0]).width).toBe(26);
-		let rendered = capturedComponents[0]!.render(26).join("\n");
+		rendered = capturedComponents[0]!.render(26).join("\n");
 		expect(rendered).toContain("HUD");
-		expect(rendered).toContain("6.0% ctx");
+		expect(rendered).toContain("Model Name · 6.0% ctx");
 
 		for (const handler of eventHandlers.get("message_end") ?? []) {
 			await handler(createAssistantMessageEvent("message_end"), ctx);
@@ -92,7 +94,18 @@ describe("pi-hud extension", () => {
 
 		expect(getOverlayOptions(capturedOptions[0]).width).toBe(42);
 		rendered = capturedComponents[0]!.render(42).join("\n");
-		expect(rendered).toContain("Session");
+		expect(rendered).toContain("Pi HUD");
+	});
+
+	test("preserves context usage in compact header with long model names", async () => {
+		const { commands, shortcuts, ctx, capturedComponents } = createHarness({ modelName: "Very Long Model Name For Header" });
+
+		await commands.get("hud")!.handler("", ctx);
+		await shortcuts.get("ctrl+h")!.handler(ctx);
+		const rendered = capturedComponents[0]!.render(26).join("\n");
+
+		expect(rendered).toContain("6.0% ctx");
+		expect(rendered).not.toContain("Very Long Model Name For Header");
 	});
 
 	test("updates project HUD settings from command arguments", async () => {
@@ -163,7 +176,7 @@ describe("pi-hud extension", () => {
 
 		await shortcuts.get("ctrl+h")!.handler(ctx);
 		expect(getOverlayOptions(capturedOptions[0]).width).toBe(42);
-		expect(capturedComponents[0]!.render(42).join("\n")).toContain("Session");
+		expect(capturedComponents[0]!.render(42).join("\n")).toContain("Pi HUD");
 	});
 
 	test("minimize shortcut can expand during an auto-compact assistant turn", async () => {
@@ -177,7 +190,7 @@ describe("pi-hud extension", () => {
 
 		await shortcuts.get("ctrl+h")!.handler(ctx);
 		expect(getOverlayOptions(capturedOptions[0]).width).toBe(42);
-		expect(capturedComponents[0]!.render(42).join("\n")).toContain("Session");
+		expect(capturedComponents[0]!.render(42).join("\n")).toContain("Pi HUD");
 	});
 
 	test("toggles by hiding the captured handle and recreates a fresh overlay", async () => {

@@ -25,6 +25,7 @@ interface HudHarness {
 interface HarnessOptions {
 	rejectCustom?: boolean;
 	mcpAdapter?: boolean;
+	modelName?: string;
 }
 
 export function createHarness(options: HarnessOptions = {}): HudHarness {
@@ -112,7 +113,7 @@ export function createHarness(options: HarnessOptions = {}): HudHarness {
 			getCwd: () => "/repo/project",
 			getBranch: () => [{ type: "message", message: assistantMessage }],
 		} as unknown as ExtensionCommandContext["sessionManager"],
-		model: { id: "model-id", name: "Model Name", contextWindow: 200_000 },
+		model: { id: "model-id", name: options.modelName ?? "Model Name", contextWindow: 200_000 },
 	} as unknown as ExtensionCommandContext;
 
 	return { commands, eventHandlers, shortcuts, ctx, custom, notify, requestRender, hideHandle, capturedComponents, capturedOptions };

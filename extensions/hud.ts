@@ -298,11 +298,13 @@ class HudComponent implements Component {
 		const contextPercent = contextUsage?.percent ?? (contextWindow > 0 ? (contextTokens / contextWindow) * 100 : null);
 		const innerWidth = Math.max(1, width - 2);
 		const lines: string[] = [];
+		const modelLabel = model?.name ?? model?.id ?? "No model";
+		const contextLabel = contextPercent === null ? "ctx unknown" : `${contextPercent.toFixed(1)}% ctx`;
+		const headerSummary = formatHeaderSummary(modelLabel, contextLabel, innerWidth);
 
 		if (this.isCompact()) {
 			this.pushTopBorder(lines, innerWidth, "HUD");
-			this.pushLine(lines, innerWidth, this.theme.fg("accent", model?.name ?? model?.id ?? "No model"));
-			this.pushLine(lines, innerWidth, contextPercent === null ? "ctx unknown" : `${contextPercent.toFixed(1)}% ctx`);
+			this.pushLine(lines, innerWidth, this.theme.fg("accent", headerSummary));
 			this.pushLine(lines, innerWidth, `${this.theme.fg("warning", `${this.subagentStatus.running} run`)} · ${this.theme.fg("error", `${this.subagentStatus.failed} err`)}`);
 			if (this.subagentStatus.activeLabel) {
 				this.pushLine(lines, innerWidth, this.theme.fg("accent", `[·] ${this.subagentStatus.activeLabel}`));
@@ -311,12 +313,11 @@ class HudComponent implements Component {
 			return lines;
 		}
 
-		this.pushTopBorder(lines, innerWidth, "Session");
-		this.pushLine(lines, innerWidth, this.theme.fg("accent", sessionName));
+		this.pushTopBorder(lines, innerWidth, "Pi HUD");
+		this.pushLine(lines, innerWidth, this.theme.fg("accent", headerSummary));
+		this.pushLine(lines, innerWidth, this.theme.fg("dim", sessionName));
 		this.pushLine(lines, innerWidth, this.theme.fg("dim", sessionId));
-		this.pushBlank(lines, innerWidth);
-		this.pushLine(lines, innerWidth, `Model ${model?.name ?? model?.id ?? "No model"}`);
-		this.pushLine(lines, innerWidth, this.theme.fg("dim", `${formatNumber(contextWindow)} ctx`));
+		this.pushLine(lines, innerWidth, this.theme.fg("dim", `${formatNumber(contextWindow)} ctx window`));
 
 		this.pushSection(lines, innerWidth, "Subagents");
 		this.pushLine(
@@ -422,6 +423,14 @@ class HudComponent implements Component {
 		const content = truncateToWidth(` ${text}`, innerWidth, "…", true);
 		lines.push(this.theme.fg("border", "│") + content + this.theme.fg("border", "│"));
 	}
+}
+
+function formatHeaderSummary(modelLabel: string, contextLabel: string, innerWidth: number): string {
+	const contentWidth = Math.max(1, innerWidth - 1);
+	const separator = " · ";
+	const maxModelWidth = contentWidth - separator.length - contextLabel.length;
+	if (maxModelWidth <= 0) return contextLabel;
+	return `${truncateToWidth(modelLabel, maxModelWidth, "…", false)}${separator}${contextLabel}`;
 }
 
 function createHudOverlayOptions(settings: HudSettings, compact: boolean): OverlayOptions {
