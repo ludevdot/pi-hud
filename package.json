@@ -1,19 +1,30 @@
 {
   "name": "pi-hud",
   "version": "0.1.5",
-  "description": "A persistent hud for Pi with context, project, and subagent status.",
+  "description": "Persistent HUD extension for Pi showing project, context, MCP, git, and subagent status.",
   "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ludevdot/pi-hud.git"
   },
+  "homepage": "https://github.com/ludevdot/pi-hud#readme",
+  "bugs": {
+    "url": "https://github.com/ludevdot/pi-hud/issues"
+  },
   "packageManager": "pnpm@10.30.2",
   "keywords": [
     "pi-package",
+    "pi-extension",
     "pi",
     "hud",
-    "tui",
+    "statusline",
+    "terminal-hud",
+    "terminal-overlay",
+    "mcp",
+    "subagents",
+    "context",
+    "git-status",
     "coding-agent"
   ],
   "files": [
