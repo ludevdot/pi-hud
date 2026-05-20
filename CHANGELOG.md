@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0
+
+### Minor Changes
+
+- Add a Git worktrees section to the expanded HUD so nearby sibling worktrees are visible without confusing temporary detached worktrees.
+
 ## 0.1.8
 
 ### Patch Changes
