@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import { writeFileSync } from "node:fs";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { createAssistantMessageEvent, createHarness, createSubagentMessageEvent, expectCommandReturnsPromptly, getOverlayOptions } from "./helpers/hud-harness.js";
@@ -53,6 +54,7 @@ describe("pi-hud extension", () => {
 		expect(rendered).toContain("12.0k tokens");
 		expect(rendered).toContain("6.0% used");
 		expect(rendered).toContain("branch main");
+		expect(rendered).not.toContain("Git worktrees");
 		expect(rendered).not.toContain("MCP");
 		expect(rendered).toContain("/hud or f2 hide/show");
 		expect(rendered).toContain("ctrl+h minimize/expand");
@@ -108,6 +110,16 @@ describe("pi-hud extension", () => {
 		expect(rendered).not.toContain("Very Long Model Name For Header");
 	});
 
+	test("skips worktree lookup while compact", async () => {
+		const { commands, shortcuts, ctx, capturedComponents } = createHarness();
+
+		await commands.get("hud")!.handler("", ctx);
+		await shortcuts.get("ctrl+h")!.handler(ctx);
+		capturedComponents[0]!.render(26);
+
+		expect(vi.mocked(spawnSync).mock.calls.some(([, args]) => Array.isArray(args) && args.includes("worktree"))).toBe(false);
+	});
+
 	test("updates project HUD settings from command arguments", async () => {
 		const { commands, ctx, notify } = createHarness();
 
@@ -140,6 +152,40 @@ describe("pi-hud extension", () => {
 		expect(writeFileSync).not.toHaveBeenCalled();
 		expect(notify).toHaveBeenCalledTimes(3);
 		expect(notify).toHaveBeenCalledWith("Usage: /hud-settings position|shortcut|minimizeShortcut|autoCompactWhileStreaming|expandedWidth|compactWidth|minTerminalWidth <value>", "warning");
+	});
+
+	test("renders git worktrees when multiple worktrees are registered", async () => {
+		vi.mocked(spawnSync).mockImplementation((command, args) => {
+			if (command === "git" && Array.isArray(args) && args.includes("worktree")) {
+				return {
+					status: 0,
+					stdout: [
+						"worktree /repo/project",
+						"HEAD abc123",
+						"branch refs/heads/main",
+						"",
+						"worktree /tmp/project-publish",
+						"HEAD 123abc",
+						"detached",
+						"",
+						"worktree /repo/project-feature",
+						"HEAD def456",
+						"branch refs/heads/feature/worktrees",
+					].join("\n"),
+				} as never;
+			}
+			return { status: 0, stdout: "main\n" } as never;
+		});
+		const { commands, ctx, capturedComponents } = createHarness();
+
+		await expectCommandReturnsPromptly(commands.get("hud")!, ctx);
+
+		const rendered = capturedComponents[0]?.render(42).join("\n");
+		expect(rendered).toContain("Git worktrees");
+		expect(rendered).toContain("* main · /repo/project");
+		expect(rendered).toContain("• feature/worktrees · /repo/project-fe");
+		expect(rendered).not.toContain("detached");
+		expect(rendered).not.toContain("/tmp/project-publish");
 	});
 
 	test("renders configured MCP servers only when the adapter package is installed", async () => {

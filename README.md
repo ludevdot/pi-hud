@@ -29,6 +29,7 @@ It shows the current session, model/context usage, subagent activity, project pa
   - token/context count when available.
 - Session context usage and cost.
 - Project path and current git branch.
+- Registered git worktrees when the repository has more than one worktree.
 - Configured MCP server names when `pi-mcp-adapter` is installed.
 
 ## Install

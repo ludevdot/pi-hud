@@ -2,7 +2,7 @@ import type { AssistantMessage } from "@earendil-works/pi-ai";
 import type { ExtensionAPI, ExtensionCommandContext, ExtensionContext, Theme } from "@earendil-works/pi-coding-agent";
 import type { Component, OverlayHandle, OverlayOptions, TUI } from "@earendil-works/pi-tui";
 import { matchesKey, truncateToWidth } from "@earendil-works/pi-tui";
-import { getGitBranch } from "./git/git.js";
+import { getGitBranch, getGitWorktrees } from "./git/git.js";
 import { getMcpAdapterInfo } from "./mcp/mcp-adapter.js";
 import { getSubagentToolLabel, parseSubagentMessage, parseSubagentResultCounts } from "./parsers/subagents.js";
 import { getProjectPath, handleHudSettingsCommand, readHudSettings, toShortcutKey } from "./settings/hud-settings.js";
@@ -343,8 +343,19 @@ class HudComponent implements Component {
 
 		this.pushSection(lines, innerWidth, "Project");
 		this.pushLine(lines, innerWidth, projectPath);
+		const gitWorktrees = getGitWorktrees(projectPath);
 		if (gitBranch) {
 			this.pushLine(lines, innerWidth, this.theme.fg("dim", `branch ${gitBranch}`));
+		}
+		if (gitWorktrees.length > 1) {
+			this.pushSection(lines, innerWidth, "Git worktrees");
+			for (const worktree of gitWorktrees.slice(0, 5)) {
+				const marker = worktree.current ? "*" : "•";
+				this.pushLine(lines, innerWidth, `${marker} ${worktree.label} · ${worktree.path}`);
+			}
+			if (gitWorktrees.length > 5) {
+				this.pushLine(lines, innerWidth, this.theme.fg("dim", `+${gitWorktrees.length - 5} more`));
+			}
 		}
 
 		if (mcpAdapter.available) {
