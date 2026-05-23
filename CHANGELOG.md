@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0
+
+### Minor Changes
+
+- Add configurable HUD module visibility settings with a Modules visibility toggle UI, default-visible modules, compact-mode hiding, and a Default settings reset.
+
 ## 0.2.1
 
 ### Patch Changes
