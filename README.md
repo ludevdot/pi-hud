@@ -136,6 +136,24 @@ Examples:
 /hud-settings autoCompactWhileStreaming off
 ```
 
+### Shortcut format
+
+Write shortcuts as `modifier+key`, using lowercase names. Multiple modifiers can be combined with `+`.
+
+| User-facing keys | Write in settings | macOS equivalent | Example |
+| ---------------- | ----------------- | ---------------- | ------- |
+| Control + key | `ctrl+key` | Control (`⌃`) + key | `ctrl+h` |
+| Alt + key | `alt+key` | Option (`⌥`) + key | `alt+h` |
+| Shift + key | `shift+key` | Shift (`⇧`) + key | `shift+f2` |
+| Control + Shift + key | `ctrl+shift+key` | Control (`⌃`) + Shift (`⇧`) + key | `ctrl+shift+h` |
+| Alt + Shift + key | `alt+shift+key` | Option (`⌥`) + Shift (`⇧`) + key | `alt+shift+h` |
+| Function key | `f1`-`f12` | Function key, sometimes `fn` + key | `f2` |
+| Command + key | Not recommended for terminal shortcuts | Command (`⌘`) + key | Prefer `ctrl+key` or `alt+key` |
+
+For macOS users, write Option shortcuts as `alt+key`, not `option+key`. Command shortcuts are usually reserved by macOS or the terminal app, so they are not portable for HUD bindings.
+
+> **macOS note:** Some terminals, including Warp depending on system settings, can route `f2` to macOS voice dictation instead of Pi. If `f2` opens dictation or does nothing in Pi, choose another shortcut such as `ctrl+shift+h` and run `/reload`.
+
 ### Recommended profiles
 
 These profiles are copy-paste examples for your Pi settings file. They are documented examples, not built-in runtime presets. Each snippet is a partial override; unspecified HUD settings keep their default or previously configured values.
