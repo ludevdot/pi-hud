@@ -39,6 +39,10 @@ export interface ActiveSubagentToolRun {
 	startedAt: number;
 }
 
+export type HudVisibilityKey = "context" | "project" | "worktrees" | "mcps";
+
+export type HudVisibility = Record<HudVisibilityKey, boolean>;
+
 export interface HudSettings {
 	position: OverlayAnchor;
 	shortcut: string;
@@ -48,4 +52,5 @@ export interface HudSettings {
 	compactWidth: number;
 	minTerminalWidth: number;
 	margin: OverlayMargin;
+	visibility: HudVisibility;
 }

@@ -102,7 +102,7 @@ Run `/hud` again, or press `f2`, to hide or show it. Press `ctrl+h` to minimize 
 | Command         | Description                                              |
 | --------------- | -------------------------------------------------------- |
 | `/hud`          | Toggle the hud.                                          |
-| `/hud-settings` | Configure position, shortcuts, auto-compact, and sizing. |
+| `/hud-settings` | Configure position, shortcuts, auto-compact, sizing, and Modules visibility. |
 
 ## Settings
 
@@ -120,12 +120,20 @@ Defaults:
     "expandedWidth": 42,
     "compactWidth": 26,
     "minTerminalWidth": 90,
-    "margin": { "top": 1, "right": 1, "bottom": 1 }
+    "margin": { "top": 1, "right": 1, "bottom": 1 },
+    "visibility": {
+      "context": true,
+      "project": true,
+      "worktrees": true,
+      "mcps": true
+    }
   }
 }
 ```
 
 Supported `position` values are `center`, `top-left`, `top-right`, `bottom-left`, `bottom-right`, `top-center`, `bottom-center`, `left-center`, and `right-center`.
+
+`visibility` controls optional HUD modules from the `/hud-settings` → `Modules visibility` toggle list. All visibility items default to `true`; set an item to `false` to hide it in expanded HUD and any compact equivalent. The toggle list includes `Default settings` to restore every configurable module to visible. Supported keys are `context`, `project` (project path + branches), `worktrees`, and `mcps`. `Subagents` is intentionally not toggleable and remains visible when applicable. After changing module visibility, run `/reload` for the change to take effect.
 
 Examples:
 
@@ -134,6 +142,8 @@ Examples:
 /hud-settings shortcut ctrl+shift+h
 /hud-settings minimizeShortcut ctrl+h
 /hud-settings autoCompactWhileStreaming off
+/hud-settings visibility worktrees off
+/hud-settings visibility context on
 ```
 
 ### Shortcut format

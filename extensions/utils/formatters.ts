@@ -1,7 +1,11 @@
+import { HUD_VISIBILITY_KEYS } from "../config/hud-settings.js";
 import type { HudSettings } from "../types/hud.js";
 
 export function formatHudSettings(settings: HudSettings): string {
-	return `HUD position=${settings.position}, shortcut=${settings.shortcut || "disabled"}, minimizeShortcut=${settings.minimizeShortcut || "disabled"}, autoCompactWhileStreaming=${settings.autoCompactWhileStreaming}, expandedWidth=${settings.expandedWidth}, compactWidth=${settings.compactWidth}, minTerminalWidth=${settings.minTerminalWidth}`;
+	const visibility = HUD_VISIBILITY_KEYS.map(
+		(key) => `${key}:${settings.visibility[key] ? "on" : "off"}`,
+	).join(", ");
+	return `HUD position=${settings.position}, shortcut=${settings.shortcut || "disabled"}, minimizeShortcut=${settings.minimizeShortcut || "disabled"}, autoCompactWhileStreaming=${settings.autoCompactWhileStreaming}, expandedWidth=${settings.expandedWidth}, compactWidth=${settings.compactWidth}, minTerminalWidth=${settings.minTerminalWidth}, visibility=${visibility}`;
 }
 
 export function formatShortcut(shortcut: string): string {
@@ -10,7 +14,9 @@ export function formatShortcut(shortcut: string): string {
 }
 
 export function formatElapsed(startedAt: number | undefined): string {
-	const elapsedSeconds = startedAt ? Math.max(0, Math.floor((Date.now() - startedAt) / 1000)) : 0;
+	const elapsedSeconds = startedAt
+		? Math.max(0, Math.floor((Date.now() - startedAt) / 1000))
+		: 0;
 	const minutes = Math.floor(elapsedSeconds / 60);
 	const seconds = elapsedSeconds % 60;
 	return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;

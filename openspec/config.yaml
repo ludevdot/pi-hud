@@ -1,0 +1,47 @@
+version: 1
+project:
+  name: pi-hud
+  repo_type: single-package
+  primary_language: typescript
+  runtime: node
+  package_manager: pnpm
+
+sdd:
+  execution_mode: interactive
+  artifact_store: openspec
+  strict_tdd: true
+  review_budget_changed_lines: 400
+  chained_pr_strategy: auto-forecast
+  phase_rules:
+    init:
+      non_destructive: true
+      implement_changes: false
+      scope: "initialize SDD context and config only"
+
+change_context:
+  upcoming_change: "Add HUD section-level visibility toggles in /hud-settings and persist visibility in hud config"
+  requested_sections:
+    - Subagents
+    - Context
+    - Project path + Branches
+    - Worktrees
+    - Configured MCPs
+
+testing:
+  policy_source:
+    - package.json
+    - README.md
+    - test/hud.test.ts
+  runner:
+    command: "pnpm test"
+    framework: vitest
+    invocation: "vitest --run"
+  commands:
+    verify_default: "pnpm test"
+    package_safety: "pnpm run verify:package"
+  conventions:
+    - "Use strict TDD: update/add tests first, then implement."
+    - "Prefer targeted vitest runs while iterating, then run full pnpm test before finalize."
+    - "HUD behavior and settings persistence are validated in test/hud.test.ts with mocked fs and extension harness."
+  quality_gates:
+    - "prepack and prepublishOnly run pnpm test and verify:package"
