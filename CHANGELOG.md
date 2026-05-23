@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1
+
+### Patch Changes
+
+- Refresh the HUD screenshot to show the current worktree display.
+
 ## 0.2.0
 
 ### Minor Changes
