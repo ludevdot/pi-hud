@@ -75,6 +75,7 @@ export async function handleHudSettingsCommand(
 		"shortcut",
 		"minimizeShortcut",
 		"autoCompactWhileStreaming",
+		"startupNotification",
 		"expandedWidth",
 		"compactWidth",
 		"minTerminalWidth",
@@ -131,6 +132,21 @@ export async function handleHudSettingsCommand(
 		};
 		writeProjectHudSettings(projectPath, updated);
 		ctx.ui.notify(`HUD auto-compact ${value}.`, "info");
+		return;
+	}
+
+	if (choice === "startupNotification") {
+		const value = await ctx.ui.select("Startup notification", [
+			"enabled",
+			"disabled",
+		]);
+		if (!value) return;
+		const updated = {
+			...settings,
+			startupNotification: value === "enabled",
+		};
+		writeProjectHudSettings(projectPath, updated);
+		ctx.ui.notify(`HUD startup notification ${value}.`, "info");
 		return;
 	}
 
@@ -202,6 +218,10 @@ function normalizeHudSettings(
 			typeof input.autoCompactWhileStreaming === "boolean"
 				? input.autoCompactWhileStreaming
 				: base.autoCompactWhileStreaming,
+		startupNotification:
+			typeof input.startupNotification === "boolean"
+				? input.startupNotification
+				: base.startupNotification,
 		expandedWidth: normalizePositiveInteger(
 			input.expandedWidth,
 			base.expandedWidth,
@@ -345,6 +365,14 @@ function updateHudSettingFromArgs(
 		return {
 			settings: { ...settings, autoCompactWhileStreaming: enabled },
 			message: `HUD auto-compact ${enabled ? "enabled" : "disabled"}.`,
+		};
+	}
+	if (key === "startupNotification") {
+		const enabled = parseBoolean(value);
+		if (enabled === undefined) return undefined;
+		return {
+			settings: { ...settings, startupNotification: enabled },
+			message: `HUD startup notification ${enabled ? "enabled" : "disabled"}.`,
 		};
 	}
 	if (
@@ -497,7 +525,7 @@ function withReloadNotice(message: string): string {
 }
 
 function getHudSettingsUsage(): string {
-	return "Usage: /hud-settings position|shortcut|minimizeShortcut|autoCompactWhileStreaming|expandedWidth|compactWidth|minTerminalWidth <value> or visibility [context|project|worktrees|mcps <on|off>]";
+	return "Usage: /hud-settings position|shortcut|minimizeShortcut|autoCompactWhileStreaming|startupNotification|expandedWidth|compactWidth|minTerminalWidth <value> or visibility [context|project|worktrees|mcps <on|off>]";
 }
 
 function parseBoolean(value: string): boolean | undefined {
@@ -530,6 +558,7 @@ function serializeHudSettings(settings: HudSettings): Record<string, unknown> {
 		shortcut: settings.shortcut,
 		minimizeShortcut: settings.minimizeShortcut,
 		autoCompactWhileStreaming: settings.autoCompactWhileStreaming,
+		startupNotification: settings.startupNotification,
 		expandedWidth: settings.expandedWidth,
 		compactWidth: settings.compactWidth,
 		minTerminalWidth: settings.minTerminalWidth,

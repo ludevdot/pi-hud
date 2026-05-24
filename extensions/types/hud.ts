@@ -48,6 +48,7 @@ export interface HudSettings {
 	shortcut: string;
 	minimizeShortcut: string;
 	autoCompactWhileStreaming: boolean;
+	startupNotification: boolean;
 	expandedWidth: number;
 	compactWidth: number;
 	minTerminalWidth: number;

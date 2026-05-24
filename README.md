@@ -17,6 +17,7 @@ It shows the current session, model/context usage, subagent activity, project pa
 ## Features
 
 - Starts visible by default when the extension is installed.
+- Shows a startup notice with the loaded HUD entry and toggle shortcut.
 - `/hud` toggle command.
 - `/hud-settings` configuration command.
 - Default hide/show keyboard shortcut: `f2`.
@@ -77,10 +78,16 @@ Global settings are stored in `~/.pi/agent/settings.json`; project-local setting
 
 ## Try locally
 
-From this repository:
+From this repository, isolate the development extension from any globally installed `pi-hud` package:
 
 ```bash
-pi -e .
+pi --no-extensions -e .
+```
+
+To load only the HUD extension file while iterating:
+
+```bash
+pi --no-extensions -e ./extensions/hud.ts
 ```
 
 From the Pi monorepo checkout during development:
@@ -102,7 +109,7 @@ Run `/hud` again, or press `f2`, to hide or show it. Press `ctrl+h` to minimize 
 | Command         | Description                                              |
 | --------------- | -------------------------------------------------------- |
 | `/hud`          | Toggle the hud.                                          |
-| `/hud-settings` | Configure position, shortcuts, auto-compact, sizing, and Modules visibility. |
+| `/hud-settings` | Configure position, shortcuts, startup notification, auto-compact, sizing, and Modules visibility. |
 
 ## Settings
 
@@ -117,6 +124,7 @@ Defaults:
     "shortcut": "f2",
     "minimizeShortcut": "ctrl+h",
     "autoCompactWhileStreaming": true,
+    "startupNotification": true,
     "expandedWidth": 42,
     "compactWidth": 26,
     "minTerminalWidth": 90,
@@ -133,6 +141,8 @@ Defaults:
 
 Supported `position` values are `center`, `top-left`, `top-right`, `bottom-left`, `bottom-right`, `top-center`, `bottom-center`, `left-center`, and `right-center`.
 
+`startupNotification` controls the startup message rendered when `pi-hud` loads in an interactive session. It defaults to `true`, skips `/reload`, and can be disabled when you want a quieter startup.
+
 `visibility` controls optional HUD modules from the `/hud-settings` → `Modules visibility` toggle list. All visibility items default to `true`; set an item to `false` to hide it in expanded HUD and any compact equivalent. The toggle list includes `Default settings` to restore every configurable module to visible. Supported keys are `context`, `project` (project path + branches), `worktrees`, and `mcps`. `Subagents` is intentionally not toggleable and remains visible when applicable. After changing module visibility, run `/reload` for the change to take effect.
 
 Examples:
@@ -142,6 +152,7 @@ Examples:
 /hud-settings shortcut ctrl+shift+h
 /hud-settings minimizeShortcut ctrl+h
 /hud-settings autoCompactWhileStreaming off
+/hud-settings startupNotification off
 /hud-settings visibility worktrees off
 /hud-settings visibility context on
 ```

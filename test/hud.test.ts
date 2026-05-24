@@ -237,6 +237,87 @@ describe("pi-hud extension", () => {
 		expect([...shortcuts.keys()].sort()).toEqual(["ctrl+h", "f2"]);
 	});
 
+	test("notifies when an interactive session starts and skips reload", async () => {
+		const { ctx, eventHandlers, notify, sendMessage } = createHarness();
+		const handlers = eventHandlers.get("session_start") ?? [];
+
+		for (const handler of handlers) await handler({ reason: "startup" }, ctx);
+		expect(sendMessage).toHaveBeenCalledWith({
+			customType: "pi-hud-notification",
+			content: "/hud or f2 toggle to show or hide HUD",
+			display: true,
+		});
+		expect(notify).not.toHaveBeenCalled();
+
+		sendMessage.mockClear();
+		for (const handler of handlers) await handler({ reason: "reload" }, ctx);
+		expect(sendMessage).not.toHaveBeenCalled();
+	});
+
+	test("respects startup notification setting and CLI command guard", async () => {
+		mockSettingsFile("/repo/project/.pi/settings.json", {
+			hud: { startupNotification: false },
+		});
+		const { ctx, eventHandlers, sendMessage } = createHarness();
+		const handlers = eventHandlers.get("session_start") ?? [];
+
+		for (const handler of handlers) await handler({ reason: "startup" }, ctx);
+		expect(sendMessage).not.toHaveBeenCalled();
+
+		fsMockState.settingsFiles.clear();
+		const originalArgv = process.argv;
+		process.argv = ["node", "pi", "update"];
+		try {
+			const cliHarness = createHarness();
+			const cliHandlers = cliHarness.eventHandlers.get("session_start") ?? [];
+			for (const handler of cliHandlers) {
+				await handler({ reason: "startup" }, cliHarness.ctx);
+			}
+			expect(cliHarness.sendMessage).not.toHaveBeenCalled();
+		} finally {
+			process.argv = originalArgv;
+		}
+	});
+
+	test("does not treat dev extension flags as a CLI command", async () => {
+		const originalArgv = process.argv;
+		process.argv = [
+			"node",
+			"pi",
+			"--no-extensions",
+			"-e",
+			"/repo/pi-hud/extensions/hud.ts",
+		];
+		try {
+			const { ctx, eventHandlers, sendMessage } = createHarness();
+			const handlers = eventHandlers.get("session_start") ?? [];
+			for (const handler of handlers) await handler({ reason: "startup" }, ctx);
+			expect(sendMessage).toHaveBeenCalledWith({
+				customType: "pi-hud-notification",
+				content: "/hud or f2 toggle to show or hide HUD",
+				display: true,
+			});
+		} finally {
+			process.argv = originalArgv;
+		}
+	});
+
+	test("updates startup notification from command arguments", async () => {
+		const { commands, ctx, notify } = createHarness();
+
+		await commands.get("hud-settings")!.handler("startupNotification off", ctx);
+
+		expect(writeFileSync).toHaveBeenCalledWith(
+			"/repo/project/.pi/settings.json",
+			expect.stringContaining('"startupNotification": false'),
+			"utf8",
+		);
+		expect(notify).toHaveBeenCalledWith(
+			"HUD startup notification disabled.",
+			"info",
+		);
+	});
+
 	test("opens as a non-capturing overlay and returns without waiting for overlay dismissal", async () => {
 		const { commands, ctx, custom, capturedOptions, capturedComponents } =
 			createHarness();

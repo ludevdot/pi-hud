@@ -11,7 +11,7 @@ import type {
 	OverlayOptions,
 	TUI,
 } from "@earendil-works/pi-tui";
-import { matchesKey, truncateToWidth } from "@earendil-works/pi-tui";
+import { matchesKey, Text, truncateToWidth } from "@earendil-works/pi-tui";
 import { getGitBranch, getGitWorktrees } from "./git/git.js";
 import { getMcpAdapterInfo } from "./mcp/mcp-adapter.js";
 import {
@@ -204,6 +204,28 @@ export default function (pi: ExtensionAPI) {
 		requestHudRender();
 	};
 
+	pi.registerMessageRenderer(
+		"pi-hud-notification",
+		(message, _options, theme) => {
+			const lines = String(message.content).split("\n");
+			const rendered = [theme.fg("warning", "[Pi-Hud notifications]")];
+			for (const line of lines) rendered.push(`  ${line}`);
+			return new Text(rendered.join("\n"), 0, 0);
+		},
+	);
+
+	const notifySessionStart = (event: unknown, ctx: ExtensionContext) => {
+		if (!ctx.hasUI || isCLICommand()) return;
+		const settings = currentHudSettings ?? readHudSettings(getProjectPath(ctx));
+		if (!settings.startupNotification) return;
+		if (getSessionStartReason(event) === "reload") return;
+		pi.sendMessage({
+			customType: "pi-hud-notification",
+			content: `/hud or ${formatShortcut(settings.shortcut)} toggle to show or hide HUD`,
+			display: true,
+		});
+	};
+
 	pi.on("agent_start", () => {
 		agentStatus.running++;
 		requestHudRender();
@@ -263,8 +285,9 @@ export default function (pi: ExtensionAPI) {
 		requestHudRender();
 	});
 
-	pi.on("session_start", (_event, ctx) => {
+	pi.on("session_start", (event, ctx) => {
 		showHud(ctx);
+		notifySessionStart(event, ctx);
 	});
 
 	pi.on("session_shutdown", () => {
@@ -637,6 +660,46 @@ function formatHeaderSummary(
 	const maxModelWidth = contentWidth - separator.length - contextLabel.length;
 	if (maxModelWidth <= 0) return contextLabel;
 	return `${truncateToWidth(modelLabel, maxModelWidth, "…", false)}${separator}${contextLabel}`;
+}
+
+function isCLICommand(): boolean {
+	const args = process.argv.slice(2);
+	const optionsWithValue = new Set([
+		"-e",
+		"--extension",
+		"-m",
+		"--model",
+		"--provider",
+		"--system-prompt",
+		"--append-system-prompt",
+		"-t",
+		"--tools",
+	]);
+	let skipNext = false;
+	for (const arg of args) {
+		if (skipNext) {
+			skipNext = false;
+			continue;
+		}
+		if (arg === "--") return false;
+		if (arg.startsWith("--") && arg.includes("=")) continue;
+		if (optionsWithValue.has(arg)) {
+			skipNext = true;
+			continue;
+		}
+		if (arg.startsWith("-")) continue;
+		return true;
+	}
+	return false;
+}
+
+function getSessionStartReason(event: unknown): string | undefined {
+	return typeof event === "object" &&
+		event !== null &&
+		"reason" in event &&
+		typeof event.reason === "string"
+		? event.reason
+		: undefined;
 }
 
 function createHudOverlayOptions(

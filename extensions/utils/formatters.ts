@@ -5,7 +5,7 @@ export function formatHudSettings(settings: HudSettings): string {
 	const visibility = HUD_VISIBILITY_KEYS.map(
 		(key) => `${key}:${settings.visibility[key] ? "on" : "off"}`,
 	).join(", ");
-	return `HUD position=${settings.position}, shortcut=${settings.shortcut || "disabled"}, minimizeShortcut=${settings.minimizeShortcut || "disabled"}, autoCompactWhileStreaming=${settings.autoCompactWhileStreaming}, expandedWidth=${settings.expandedWidth}, compactWidth=${settings.compactWidth}, minTerminalWidth=${settings.minTerminalWidth}, visibility=${visibility}`;
+	return `HUD position=${settings.position}, shortcut=${settings.shortcut || "disabled"}, minimizeShortcut=${settings.minimizeShortcut || "disabled"}, autoCompactWhileStreaming=${settings.autoCompactWhileStreaming}, startupNotification=${settings.startupNotification}, expandedWidth=${settings.expandedWidth}, compactWidth=${settings.compactWidth}, minTerminalWidth=${settings.minTerminalWidth}, visibility=${visibility}`;
 }
 
 export function formatShortcut(shortcut: string): string {
