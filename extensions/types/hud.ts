@@ -55,3 +55,14 @@ export interface HudSettings {
 	margin: OverlayMargin;
 	visibility: HudVisibility;
 }
+
+export interface ReleaseNotes {
+	version: string;
+	previousTag?: string;
+	generatedAt?: string;
+	commits: Array<{ hash: string; subject: string }>;
+}
+
+export interface ReleaseNotesState {
+	lastReleaseNotesShown?: string;
+}

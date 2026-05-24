@@ -33,6 +33,8 @@ import type {
 	ActiveSubagentToolRun,
 	AgentStatus,
 	HudSettings,
+	ReleaseNotes,
+	ReleaseNotesState,
 	SessionStats,
 	SubagentRunCounts,
 	SubagentStatus,
@@ -712,17 +714,6 @@ function getSessionStartReason(event: unknown): string | undefined {
 		? event.reason
 		: undefined;
 }
-
-type ReleaseNotes = {
-	version: string;
-	previousTag?: string;
-	generatedAt?: string;
-	commits: Array<{ hash: string; subject: string }>;
-};
-
-type ReleaseNotesState = {
-	lastReleaseNotesShown?: string;
-};
 
 function formatStartupNotificationContent(
 	settings: HudSettings,
