@@ -8,6 +8,7 @@ const root = join(fileURLToPath(new URL("..", import.meta.url)));
 const requiredPaths = [
 	"assets/pi-hud.jpeg",
 	"assets/hud.png",
+	"assets/release-notes.json",
 	"extensions/config/hud-settings.ts",
 	"extensions/git/git.ts",
 	"extensions/hud.ts",
@@ -16,6 +17,7 @@ const requiredPaths = [
 	"extensions/settings/hud-settings.ts",
 	"extensions/types/hud.ts",
 	"skills/release/SKILL.md",
+	"scripts/generate-release-notes.mjs",
 	"extensions/utils/formatters.ts",
 	"extensions/utils/records.ts",
 	"CHANGELOG.md",

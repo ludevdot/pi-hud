@@ -1,0 +1,11 @@
+{
+	"version": "0.3.0",
+	"previousTag": "v-0.3.0-RELEASE",
+	"generatedAt": "2026-05-24T17:02:54.884Z",
+	"commits": [
+		{
+			"hash": "e2a4097",
+			"subject": "feat(hud): show startup notification (#56)"
+		}
+	]
+}

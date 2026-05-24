@@ -13,12 +13,18 @@ import {
 
 const fsMockState = vi.hoisted(() => ({
 	settingsFiles: new Map<string, string>(),
+	releaseNotes: undefined as string | undefined,
+	releaseNotesState: undefined as string | undefined,
 }));
 
 vi.mock("node:fs", () => ({
 	existsSync: vi.fn(
 		(path: string) =>
 			fsMockState.settingsFiles.has(path) ||
+			(path.endsWith("release-notes.json") &&
+				fsMockState.releaseNotes !== undefined) ||
+			(path.endsWith("state/pi-hud.json") &&
+				fsMockState.releaseNotesState !== undefined) ||
 			path.endsWith(".git") ||
 			path.endsWith("HEAD") ||
 			path.endsWith(".mcp.json"),
@@ -27,6 +33,9 @@ vi.mock("node:fs", () => ({
 	readFileSync: vi.fn((path: string) => {
 		const mocked = fsMockState.settingsFiles.get(path);
 		if (mocked !== undefined) return mocked;
+		if (path.endsWith("release-notes.json")) return fsMockState.releaseNotes;
+		if (path.endsWith("state/pi-hud.json"))
+			return fsMockState.releaseNotesState;
 		if (path.endsWith(".mcp.json"))
 			return JSON.stringify({ mcpServers: { filesystem: {}, github: {} } });
 		return "";
@@ -41,6 +50,8 @@ vi.mock("node:child_process", () => ({
 
 afterEach(() => {
 	fsMockState.settingsFiles.clear();
+	fsMockState.releaseNotes = undefined;
+	fsMockState.releaseNotesState = undefined;
 	delete process.env.PI_CODING_AGENT_DIR;
 	vi.mocked(spawnSync).mockImplementation(
 		() => ({ status: 0, stdout: "main\n" }) as never,
@@ -50,6 +61,14 @@ afterEach(() => {
 
 function mockSettingsFile(path: string, settings: unknown): void {
 	fsMockState.settingsFiles.set(path, JSON.stringify(settings));
+}
+
+function mockReleaseNotes(notes: unknown): void {
+	fsMockState.releaseNotes = JSON.stringify(notes);
+}
+
+function mockReleaseNotesState(state: unknown): void {
+	fsMockState.releaseNotesState = JSON.stringify(state);
 }
 
 function hasInputHandler(
@@ -300,6 +319,63 @@ describe("pi-hud extension", () => {
 		} finally {
 			process.argv = originalArgv;
 		}
+	});
+
+	test("shows packaged release notes once per version", async () => {
+		process.env.PI_CODING_AGENT_DIR = "/agent";
+		mockReleaseNotes({
+			version: "0.3.1",
+			previousTag: "v-0.3.0-RELEASE",
+			commits: [
+				{ hash: "abc1234", subject: "Add startup notification" },
+				{ hash: "def5678", subject: "Render release notes" },
+			],
+		});
+		const { ctx, eventHandlers, sendMessage } = createHarness();
+		const handlers = eventHandlers.get("session_start") ?? [];
+
+		for (const handler of handlers) await handler({ reason: "startup" }, ctx);
+
+		expect(sendMessage).toHaveBeenCalledWith({
+			customType: "pi-hud-notification",
+			content: [
+				"/hud or f2 toggle to show or hide HUD",
+				"",
+				"Latest release 0.3.1",
+				"abc1234 Add startup notification",
+				"def5678 Render release notes",
+			].join("\n"),
+			display: true,
+		});
+		expect(writeFileSync).toHaveBeenCalledWith(
+			"/agent/state/pi-hud.json",
+			expect.stringContaining('"lastReleaseNotesShown": "0.3.1"'),
+			"utf8",
+		);
+	});
+
+	test("skips release notes that were already shown", async () => {
+		process.env.PI_CODING_AGENT_DIR = "/agent";
+		mockReleaseNotes({
+			version: "0.3.1",
+			commits: [{ hash: "abc1234", subject: "Add startup notification" }],
+		});
+		mockReleaseNotesState({ lastReleaseNotesShown: "0.3.1" });
+		const { ctx, eventHandlers, sendMessage } = createHarness();
+		const handlers = eventHandlers.get("session_start") ?? [];
+
+		for (const handler of handlers) await handler({ reason: "startup" }, ctx);
+
+		expect(sendMessage).toHaveBeenCalledWith({
+			customType: "pi-hud-notification",
+			content: "/hud or f2 toggle to show or hide HUD",
+			display: true,
+		});
+		expect(writeFileSync).not.toHaveBeenCalledWith(
+			"/agent/state/pi-hud.json",
+			expect.any(String),
+			"utf8",
+		);
 	});
 
 	test("updates startup notification from command arguments", async () => {

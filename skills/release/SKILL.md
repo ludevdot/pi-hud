@@ -21,6 +21,7 @@ Use this skill when preparing, publishing, or verifying a `pi-hud` release.
 - Work on a dedicated branch until the release PR is merged. Tag from `main` unless the user explicitly approves releasing another branch commit.
 - Never push a release tag before the release commit is pushed and `npm view pi-hud@<version>` confirms the version is unpublished.
 - Never skip `pnpm release:check` before tagging.
+- Release preparation MUST refresh packaged release metadata before validation so runtime startup notices can show the latest release details without git or network access.
 
 ## Decision Gates
 
@@ -49,28 +50,37 @@ Use this skill when preparing, publishing, or verifying a `pi-hud` release.
    pnpm version:changeset
    ```
 
-3. Verify the target version is unpublished:
+3. Generate packaged release metadata for the startup notice:
 
    ```bash
    VERSION=$(node -p "require('./package.json').version")
+   PREVIOUS_TAG=$(git tag --list 'v-*-RELEASE' --sort=-creatordate | head -1)
+   pnpm generate:release-notes
+   ```
+
+   The generated metadata should be committed with the release prep and packaged with npm, for example as `assets/release-notes.json`. It should include the new package version, previous release tag/version when available, generation timestamp, and commit list from `$PREVIOUS_TAG..HEAD`. Runtime code should read this static file instead of calling git, npm, or GitHub.
+
+4. Verify the target version is unpublished:
+
+   ```bash
    npm view "pi-hud@$VERSION" version --registry=https://registry.npmjs.org/ || true
    ```
 
-4. Validate locally:
+5. Validate locally:
 
    ```bash
    pnpm release:check
    ```
 
-5. Commit and push the release preparation:
+6. Commit and push the release preparation:
 
    ```bash
-   git add package.json pnpm-lock.yaml CHANGELOG.md .changeset
+   git add package.json pnpm-lock.yaml CHANGELOG.md assets/release-notes.json .changeset
    git commit -m "chore(release): v$VERSION"
    git push origin HEAD
    ```
 
-6. After the release PR is merged, tag the exact release commit:
+7. After the release PR is merged, tag the exact release commit:
 
    ```bash
    TAG="v-$VERSION-RELEASE"
@@ -78,7 +88,27 @@ Use this skill when preparing, publishing, or verifying a `pi-hud` release.
    git push origin "$TAG"
    ```
 
-7. Watch publish and verify npm/Pi availability.
+8. Watch publish and verify npm/Pi availability.
+
+## Packaged Release Metadata Contract
+
+- Generate the metadata during release preparation, after `pnpm version:changeset` updates `package.json` and `CHANGELOG.md`, and before `pnpm release:check`.
+- Prefer a deterministic script such as `pnpm generate:release-notes` that reads local git tags and writes a static JSON file included by `package.json#files`.
+- Do not make runtime startup notifications depend on `.git`, npm registry, GitHub API, or network access.
+- The JSON should be small and stable. Recommended shape:
+
+  ```json
+  {
+    "version": "0.3.1",
+    "previousTag": "v-0.3.0-RELEASE",
+    "generatedAt": "2026-05-24T00:00:00.000Z",
+    "commits": [
+      { "hash": "abc1234", "subject": "Add startup notification" }
+    ]
+  }
+  ```
+
+- Runtime should persist a shown marker by version, for example `lastReleaseNotesShown: "0.3.1"`, so each packaged release note is shown once.
 
 ## Output Contract
 
