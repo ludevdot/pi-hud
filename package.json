@@ -70,7 +70,7 @@
     "@earendil-works/pi-coding-agent": "0.74.1",
     "@earendil-works/pi-tui": "0.74.1",
     "tsx": "4.21.0",
-    "typescript": "5.9.2",
+    "typescript": "6.0.3",
     "vitest": "3.2.4"
   },
   "engines": {
