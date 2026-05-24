@@ -36,7 +36,7 @@ export const HUD_VISIBILITY_LABELS = {
 
 export const DEFAULT_HUD_SETTINGS: HudSettings = {
 	position: "top-right",
-	shortcut: "f2",
+	shortcut: "ctrl+shift+h",
 	minimizeShortcut: "ctrl+h",
 	autoCompactWhileStreaming: true,
 	startupNotification: true,

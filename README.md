@@ -20,7 +20,7 @@ It shows the current session, model/context usage, subagent activity, project pa
 - Shows a startup notice with the loaded HUD entry, toggle shortcut, and once-per-version packaged release notes.
 - `/hud` toggle command.
 - `/hud-settings` configuration command.
-- Default hide/show keyboard shortcut: `f2`.
+- Default hide/show keyboard shortcut: `ctrl+shift+h`.
 - Default minimize/expand keyboard shortcut: `ctrl+h`.
 - Non-blocking TUI overlay: keep typing while the hud is visible.
 - Live subagent status:
@@ -102,7 +102,7 @@ The HUD opens automatically on session start. Inside Pi, run:
 /hud
 ```
 
-Run `/hud` again, or press `f2`, to hide or show it. Press `ctrl+h` to minimize or expand it.
+Run `/hud` again, or press `ctrl+shift+h`, to hide or show it. Press `ctrl+h` to minimize or expand it.
 
 ## Commands
 
@@ -121,7 +121,7 @@ Defaults:
 {
   "hud": {
     "position": "top-right",
-    "shortcut": "f2",
+    "shortcut": "ctrl+shift+h",
     "minimizeShortcut": "ctrl+h",
     "autoCompactWhileStreaming": true,
     "startupNotification": true,
@@ -173,7 +173,7 @@ Write shortcuts as `modifier+key`, using lowercase names. Multiple modifiers can
 
 For macOS users, write Option shortcuts as `alt+key`, not `option+key`. Command shortcuts are usually reserved by macOS or the terminal app, so they are not portable for HUD bindings.
 
-> **macOS note:** Some terminals, including Warp depending on system settings, can route `f2` to macOS voice dictation instead of Pi. If `f2` opens dictation or does nothing in Pi, choose another shortcut such as `ctrl+shift+h` and run `/reload`.
+> **macOS note:** Function keys such as `f2` can be intercepted by macOS, terminal emulators, keyboard settings, or multiplexers before Pi receives them. The default `ctrl+shift+h` avoids function keys and is usually more portable. If your terminal collapses `ctrl+shift+h` into `ctrl+h`, use another shortcut such as `ctrl+alt+h` and run `/reload`.
 
 ### Recommended profiles
 

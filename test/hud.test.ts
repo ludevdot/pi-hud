@@ -253,7 +253,7 @@ describe("pi-hud extension", () => {
 		expect(commands.has("hud-settings")).toBe(true);
 		expect(commands.has("sidebar")).toBe(false);
 		expect(commands.has("session-sidebar")).toBe(false);
-		expect([...shortcuts.keys()].sort()).toEqual(["ctrl+h", "f2"]);
+		expect([...shortcuts.keys()].sort()).toEqual(["ctrl+h", "ctrl+shift+h"]);
 	});
 
 	test("notifies when an interactive session starts and skips reload", async () => {
@@ -263,7 +263,7 @@ describe("pi-hud extension", () => {
 		for (const handler of handlers) await handler({ reason: "startup" }, ctx);
 		expect(sendMessage).toHaveBeenCalledWith({
 			customType: "pi-hud-notification",
-			content: "/hud or f2 toggle to show or hide HUD",
+			content: "/hud or ctrl+shift+h toggle to show or hide HUD",
 			display: true,
 		});
 		expect(notify).not.toHaveBeenCalled();
@@ -313,7 +313,7 @@ describe("pi-hud extension", () => {
 			for (const handler of handlers) await handler({ reason: "startup" }, ctx);
 			expect(sendMessage).toHaveBeenCalledWith({
 				customType: "pi-hud-notification",
-				content: "/hud or f2 toggle to show or hide HUD",
+				content: "/hud or ctrl+shift+h toggle to show or hide HUD",
 				display: true,
 			});
 		} finally {
@@ -339,7 +339,7 @@ describe("pi-hud extension", () => {
 		expect(sendMessage).toHaveBeenCalledWith({
 			customType: "pi-hud-notification",
 			content: [
-				"/hud or f2 toggle to show or hide HUD",
+				"/hud or ctrl+shift+h toggle to show or hide HUD",
 				"",
 				"Latest release 0.3.1",
 				"abc1234 Add startup notification",
@@ -368,7 +368,7 @@ describe("pi-hud extension", () => {
 
 		expect(sendMessage).toHaveBeenCalledWith({
 			customType: "pi-hud-notification",
-			content: "/hud or f2 toggle to show or hide HUD",
+			content: "/hud or ctrl+shift+h toggle to show or hide HUD",
 			display: true,
 		});
 		expect(writeFileSync).not.toHaveBeenCalledWith(
@@ -418,7 +418,7 @@ describe("pi-hud extension", () => {
 		expect(rendered).toContain("branch main");
 		expect(rendered).not.toContain("Git worktrees");
 		expect(rendered).not.toContain("MCP");
-		expect(rendered).toContain("/hud or f2 hide/show");
+		expect(rendered).toContain("/hud or ctrl+shift+h hide/show");
 		expect(rendered).toContain("ctrl+h minimize/expand");
 	});
 
