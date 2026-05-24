@@ -1,8 +1,12 @@
 {
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"previousTag": "v-0.3.0-RELEASE",
-	"generatedAt": "2026-05-24T17:02:54.884Z",
+	"generatedAt": "2026-05-24T17:10:01.737Z",
 	"commits": [
+		{
+			"hash": "299682a",
+			"subject": "feat(hud): show packaged release notes (#58)"
+		},
 		{
 			"hash": "e2a4097",
 			"subject": "feat(hud): show startup notification (#56)"

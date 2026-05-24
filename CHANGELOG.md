@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0
+
+### Minor Changes
+
+- Show a custom startup notification with the HUD toggle shortcut and display packaged release notes once per version.
+
 ## 0.3.0
 
 ### Minor Changes
