@@ -3,9 +3,8 @@ allowBuilds:
   esbuild: true
   protobufjs: true
 
-# Keep pnpm 11's default 24-hour release-age gate, but allow the
-# already-reviewed Pi 0.77.0 dependency refresh merged in #77 to install before
-# the cooldown expires.
+# Keep pnpm 11's default 24-hour release-age gate, but allow already-reviewed
+# Pi dependency refreshes to install before the cooldown expires.
 minimumReleaseAgeExclude:
   - "@earendil-works/pi-agent-core@0.77.0"
   - "@earendil-works/pi-ai@0.77.0"
@@ -22,3 +21,7 @@ minimumReleaseAgeExclude:
   - "@mariozechner/clipboard-linux-x64-musl@0.3.9"
   - "@mariozechner/clipboard-win32-arm64-msvc@0.3.9"
   - "@mariozechner/clipboard-win32-x64-msvc@0.3.9"
+  - "@earendil-works/pi-agent-core@0.79.0"
+  - "@earendil-works/pi-ai@0.79.0"
+  - "@earendil-works/pi-coding-agent@0.79.0"
+  - "@earendil-works/pi-tui@0.79.0"
