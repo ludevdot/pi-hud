@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.1
+
+### Patch Changes
+
+- Route live MCP footer status to the dedicated MCP line and hide MCP from the Help/Flow status segment so footer mode no longer shows conflicting MCP counts.
+
 ## 0.8.0
 
 ### Minor Changes

@@ -1,19 +1,31 @@
 {
-	"version": "0.8.0",
-	"previousTag": "v-0.7.0-RELEASE",
-	"generatedAt": "2026-06-07T21:06:18.393Z",
+	"version": "0.8.1",
+	"previousTag": "v-0.8.0-RELEASE",
+	"generatedAt": "2026-06-10T08:44:01.748Z",
 	"commits": [
 		{
-			"hash": "af50b8f",
-			"subject": "feat(footer): add subscription usage display"
+			"hash": "0810994",
+			"subject": "fix(footer): route live MCP status to dedicated line"
 		},
 		{
-			"hash": "9ff52ac",
-			"subject": "feat(settings): add HUD settings modal"
+			"hash": "b9b1c21",
+			"subject": "chore(deps-dev): bump @earendil-works/pi-ai from 0.77.0 to 0.78.0 (#127)"
 		},
 		{
-			"hash": "c6515aa",
-			"subject": "fix(footer): prefer live MCP status"
+			"hash": "2101ff2",
+			"subject": "chore(deps-dev): bump @earendil-works/pi-tui from 0.77.0 to 0.78.0 (#126)"
+		},
+		{
+			"hash": "6745af7",
+			"subject": "chore(deps-dev): bump @earendil-works/pi-coding-agent (#125)"
+		},
+		{
+			"hash": "037c176",
+			"subject": "Merge pull request #124 from ludevdot/dependabot/npm_and_yarn/vitest-4.1.8"
+		},
+		{
+			"hash": "c54e8a4",
+			"subject": "Merge pull request #123 from ludevdot/dependabot/npm_and_yarn/tsx-4.22.4"
 		}
 	]
 }
