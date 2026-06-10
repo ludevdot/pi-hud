@@ -171,7 +171,7 @@ describe("pi-hud extension", () => {
 		process.env.PI_CODING_AGENT_DIR = "/agent";
 		expect(readHudSettings("/repo/project")).toMatchObject({
 			mode: "overlay",
-			switchShortcut: "ctrl+s",
+			switchShortcut: "ctrl+.",
 			usageDisplay: "metered",
 			contextIndicator: "icon",
 			visibility: {
@@ -181,6 +181,10 @@ describe("pi-hud extension", () => {
 				mcps: true,
 			},
 		});
+		mockSettingsFile("/agent/settings.json", {
+			hud: { switchShortcut: "ctrl+s" },
+		});
+		expect(readHudSettings("/repo/project").switchShortcut).toBe("ctrl+.");
 		mockSettingsFile("/agent/settings.json", {
 			hud: { visibility: { context: false, mcps: false } },
 		});
@@ -455,8 +459,8 @@ describe("pi-hud extension", () => {
 		expect(commands.has("sidebar")).toBe(false);
 		expect(commands.has("session-sidebar")).toBe(false);
 		expect([...shortcuts.keys()].sort()).toEqual([
+			"ctrl+.",
 			"ctrl+h",
-			"ctrl+s",
 			"ctrl+shift+h",
 		]);
 	});
@@ -735,8 +739,19 @@ describe("pi-hud extension", () => {
 		expect(rendered).not.toContain("Git worktrees");
 		expect(rendered).not.toContain("MCP");
 		expect(rendered).toContain("/hud or ctrl+shift+h hide/show");
-		expect(rendered).toContain("ctrl+s switch mode");
+		expect(rendered).toContain("ctrl+. switch mode");
 		expect(rendered).toContain("ctrl+h minimize/expand");
+	});
+
+	test("highlights the switch mode shortcut helper", async () => {
+		const { commands, ctx, capturedComponents } = createHarness({
+			showThemeColors: true,
+		});
+
+		await expectCommandReturnsPromptly(commands.get("hud")!, ctx);
+
+		const rendered = capturedComponents[0]?.render(42).join("\n");
+		expect(rendered).toContain("<warning>ctrl+. switch mode</warning>");
 	});
 
 	test("auto-compacts for the assistant turn and expands when it ends", async () => {
@@ -878,11 +893,11 @@ describe("pi-hud extension", () => {
 
 		await commands
 			.get("hud-settings")!
-			.handler("switchShortcut ctrl+alt+s", ctx);
+			.handler("switchShortcut ctrl+.", ctx);
 
 		expect(writeFileSync).toHaveBeenCalledWith(
 			"/repo/project/.pi/settings.json",
-			expect.stringContaining('"switchShortcut": "ctrl+alt+s"'),
+			expect.stringContaining('"switchShortcut": "ctrl+."'),
 			"utf8",
 		);
 		expect(notify).toHaveBeenCalledWith(
@@ -911,9 +926,10 @@ describe("pi-hud extension", () => {
 			.get("hud-settings")!
 			.handler("minimizeShortcut ctrl+shift+m", ctx);
 		await commands.get("hud-settings")!.handler("minimizeShortcut alt+m", ctx);
+		await commands.get("hud-settings")!.handler("switchShortcut ctrl+s", ctx);
 
 		expect(writeFileSync).not.toHaveBeenCalled();
-		expect(notify).toHaveBeenCalledTimes(3);
+		expect(notify).toHaveBeenCalledTimes(4);
 		expect(notify).toHaveBeenCalledWith(
 			expect.stringContaining("Usage: /hud-settings"),
 			"warning",
@@ -1430,7 +1446,7 @@ describe("pi-hud extension", () => {
 	test("switch shortcut toggles between footer and overlay immediately", async () => {
 		const { shortcuts, ctx, custom, notify, setFooter } = createHarness();
 
-		await shortcuts.get("ctrl+s")!.handler(ctx);
+		await shortcuts.get("ctrl+.")!.handler(ctx);
 		expect(writeFileSync).toHaveBeenLastCalledWith(
 			"/repo/project/.pi/settings.json",
 			expect.stringContaining('"mode": "footer"'),
@@ -1440,7 +1456,7 @@ describe("pi-hud extension", () => {
 		expect(custom).not.toHaveBeenCalled();
 		expect(notify).toHaveBeenLastCalledWith("HUD mode set to footer.", "info");
 
-		await shortcuts.get("ctrl+s")!.handler(ctx);
+		await shortcuts.get("ctrl+.")!.handler(ctx);
 		expect(writeFileSync).toHaveBeenLastCalledWith(
 			"/repo/project/.pi/settings.json",
 			expect.stringContaining('"mode": "overlay"'),

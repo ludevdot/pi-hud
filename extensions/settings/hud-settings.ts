@@ -219,9 +219,15 @@ function normalizePosition(
 
 function normalizeShortcut(value: string, fallback: string): string {
 	const shortcut = value.trim();
-	const parts = shortcut.toLowerCase().split("+");
+	const normalizedShortcut = shortcut.toLowerCase();
+	const parts = normalizedShortcut.split("+");
 	const key = parts[parts.length - 1];
-	if (key === "enter" || key === "return" || shortcut.toLowerCase() === "alt+m")
+	if (
+		key === "enter" ||
+		key === "return" ||
+		normalizedShortcut === "alt+m" ||
+		normalizedShortcut === "ctrl+s"
+	)
 		return fallback;
 	if (parts.includes("ctrl") && (key === "m" || key === "j")) return fallback;
 	return shortcut;
