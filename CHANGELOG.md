@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.1
+
+### Patch Changes
+
+- 4d6678d: Change the default HUD mode switch shortcut to `ctrl+.` and reject Pi's reserved `ctrl+s` binding.
+
 ## 0.9.0
 
 ### Minor Changes

@@ -1,11 +1,11 @@
 {
-	"version": "0.9.0",
-	"previousTag": "v-0.8.1-RELEASE",
-	"generatedAt": "2026-06-10T20:54:14.102Z",
+	"version": "0.9.1",
+	"previousTag": "v-0.9.0-RELEASE",
+	"generatedAt": "2026-06-10T21:15:57.458Z",
 	"commits": [
 		{
-			"hash": "c254508",
-			"subject": "feat(hud): add mode switch shortcut (#135)"
+			"hash": "4d6678d",
+			"subject": "fix(hud): avoid reserved switch shortcut (#139)"
 		}
 	]
 }
