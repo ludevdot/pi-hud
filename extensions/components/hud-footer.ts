@@ -106,17 +106,20 @@ export class HudFooter implements Component {
 		const extensionStatuses = [
 			...this.footerData.getExtensionStatuses().values(),
 		].filter((status) => shouldShowExtensionStatus(status));
-		const hasLiveMcpStatus = extensionStatuses.some((status) =>
-			isMcpExtensionStatus(status),
+		const liveMcpLabel = extensionStatuses
+			.map((status) => parseMcpExtensionStatus(status))
+			.find((status): status is string => status !== null);
+		const nonMcpExtensionStatuses = extensionStatuses.filter(
+			(status) => parseMcpExtensionStatus(status) === null,
 		);
 		const mcpAdapter = getMcpAdapterInfo(this.pi, projectPath);
-		const mcpLabel = formatMcpCount(mcpAdapter);
+		const mcpLabel = liveMcpLabel ?? formatMcpCount(mcpAdapter);
 		const subagentSegment = this.subagentStatus.seen
 			? ` │ Subagents: ${this.subagentStatus.running} run · ${this.subagentStatus.completed} done · ${this.subagentStatus.failed} err`
 			: "";
 		const statusSegment =
-			extensionStatuses.length > 0
-				? ` │ Status: ${extensionStatuses.join(" │ ")}`
+			nonMcpExtensionStatuses.length > 0
+				? ` │ Status: ${nonMcpExtensionStatuses.join(" │ ")}`
 				: "";
 		const sessionId = getSessionId(this.ctx);
 		const docsHintStyle = formatDocsHintStyle();
@@ -130,9 +133,7 @@ export class HudFooter implements Component {
 				)
 			: `▏ ❔ Help     /hud-mode │ /hud-settings │ ${PI_HUD_DOCS_LABEL}${statusSegment}`;
 
-		const mcpOrWorktreeLine = hasLiveMcpStatus
-			? `▏ 🌿 Worktree: ${worktree}`
-			: `▏ 🔌 MCP      ${mcpLabel} │ Worktree: ${worktree}`;
+		const mcpOrWorktreeLine = `▏ 🔌 MCP      ${mcpLabel} │ Worktree: ${worktree}`;
 
 		return [
 			this.renderLine(
@@ -390,8 +391,23 @@ function shouldShowExtensionStatus(status: string): boolean {
 	return status.trim().length > 0;
 }
 
-function isMcpExtensionStatus(status: string): boolean {
-	return status.trim().startsWith("MCP:");
+function parseMcpExtensionStatus(status: string): string | null {
+	const match = normalizeStatusText(status).match(/^MCP:\s*(.*)$/);
+	const label = match?.[1]?.trim();
+	return label ? label : null;
+}
+
+function normalizeStatusText(status: string): string {
+	return stripTerminalSequences(status)
+		.replace(/[\r\n\t]/g, " ")
+		.replace(/ +/g, " ")
+		.trim();
+}
+
+function stripTerminalSequences(text: string): string {
+	return text
+		.replace(/\u001B\][^\u0007]*(?:\u0007|\u001B\\)/g, "")
+		.replace(/\u001B\[[0-?]*[ -/]*[@-~]/g, "");
 }
 
 function padToVisibleWidth(text: string, width: number): string {

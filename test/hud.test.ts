@@ -1461,9 +1461,36 @@ describe("pi-hud extension", () => {
 			.render(120)
 			.map(unwrapBg)
 			.join("\n");
-		expect(rendered).toContain("Status: LSP Inactive │ MCP: 1/5 servers");
+		expect(rendered).toContain("MCP      1/5 servers");
+		expect(rendered).toContain("Status: LSP Inactive");
+		expect(rendered).not.toContain("Status: LSP Inactive │ MCP: 1/5 servers");
 		expect(rendered).not.toContain("MCP      2/2 servers");
 		expect(rendered).toContain("Worktree: No worktrees");
+	});
+
+	test("footer suppresses styled MCP status from help status segment", async () => {
+		mockSettingsFile("/repo/project/.pi/settings.json", {
+			hud: { mode: "footer" },
+		});
+		const { eventHandlers, ctx, capturedFooterComponents } = createHarness({
+			mcpAdapter: true,
+			extensionStatuses: new Map([
+				["mcp", "\u001B[32mMCP:\u001B[0m 2/3 servers"],
+			]),
+		});
+
+		for (const handler of eventHandlers.get("session_start") ?? []) {
+			await handler({ type: "session_start" }, ctx);
+		}
+
+		const rendered = capturedFooterComponents[0]!
+			.render(120)
+			.map(unwrapBg)
+			.join("\n");
+		expect(rendered).toContain("MCP      2/3 servers");
+		expect(rendered).not.toContain("Status: MCP:");
+		expect(rendered).not.toContain("Status:");
+		expect(rendered).not.toContain("MCP      2/2 servers");
 	});
 
 	test("footer shows the current path when linked worktrees exist", async () => {

@@ -12,9 +12,10 @@ Persistent HUD for [Pi](https://pi.dev), published as a Pi package at [pi.dev/pa
 
 It can run as the default right-side overlay or as an opt-in footer replacement. It shows the current session, model/context usage, subagent activity, project path, git branch, worktrees, and MCP configuration without stealing focus from the editor.
 
+![pi-hud footer mode](assets/hud-footer.svg)
+
 ![pi-hud session panel](assets/hud.png)
 
-![pi-hud footer mode](assets/hud-footer.svg)
 
 ## Features
 
@@ -192,7 +193,7 @@ The footer renders five compact lines:
 ```text
 ▏ 📁 Project  Pi-hud /Users/ludev/projectes/pi-hud 🟢 (main)
 ▏ 🧠 Context  12.0k tokens │ 🟢 6.0% used/200.0k ctx │ Claude Sonnet │ thinking: medium │ $0.01000 spent
-▏ 🔌 MCP      2/2 servers │ Worktree: No worktrees
+▏ 🔌 MCP      2/4 servers │ Worktree: No worktrees
 ▏ ❔ Help     /hud-mode │ /hud-settings │ 🔗 docs │ Status: LSP Inactive
 ▏ 🔁 Session  resume: pi --session 019e9925-92bb-78d7-aa4a-44ef32c10fcc
 ```
@@ -224,7 +225,7 @@ Context pressure uses the same thresholds as the overlay HUD:
 | `85–94%` | `🟡` bold warning |
 | `>=95%` | `🔴` bold error |
 
-Worktrees show `No worktrees` when Git only reports the current checkout. When linked worktrees exist, the footer shows the current worktree path. Footer mode also preserves non-duplicated extension statuses, such as LSP, but hides MCP status from the final line because Pi HUD already renders MCP in its own line. The final session line shows the exact `pi --session <id>` command to resume the current session later.
+Worktrees show `No worktrees` when Git only reports the current checkout. When linked worktrees exist, the footer shows the current worktree path. Footer mode also preserves non-duplicated extension statuses, such as LSP, but hides MCP status from the final line because Pi HUD already renders MCP in its own line. When Pi exposes live MCP status, the MCP count can start at `0/N servers` and increase as servers connect or are used. The final session line shows the exact `pi --session <id>` command to resume the current session later.
 
 ### Shortcut format
 
@@ -334,7 +335,7 @@ Shortcut changes require `/reload` because shortcuts are registered when the ext
 ## Notes
 
 - Configured MCP servers are shown only when Pi has [`pi-mcp-adapter`](https://pi.dev/packages/pi-mcp-adapter?name=pi-mcp-adap) installed; config files alone do not enable the section.
-- Footer mode prefers Pi's live `MCP:` extension status when available, so connected/total counts stay aligned with Pi's footer data.
+- Footer mode prefers Pi's live `MCP:` extension status when available, so the dedicated MCP line shows connected/total counts such as `0/4 servers` or `2/4 servers`.
 - When no live `MCP:` extension status is available, footer mode falls back to the configured MCP server count in `N/N servers` form.
 - Subagent status is based on Pi extension events and `pi-subagents` tool/result shapes when available.
 - The overlay auto-compacts for the full assistant turn and expands when the turn ends, instead of changing state on each reasoning update.
@@ -347,14 +348,14 @@ Shortcut changes require `/reload` because shortcuts are registered when the ext
 
 The overlay HUD shows configured MCP server names, not live connection status. It prefers Pi's active agent MCP config at `~/.pi/agent/mcp.json` (or `$PI_CODING_AGENT_DIR/mcp.json`) so enable/disable changes followed by `/reload` do not get mixed with stale project-local configs. If that Pi agent config is absent, it falls back to legacy global/project MCP config paths.
 
-Footer mode can also receive Pi's live `MCP:` footer extension status. When that status is present, footer mode shows the live value and suppresses the configured fallback row to avoid conflicting MCP counts.
+Footer mode can also receive Pi's live `MCP:` footer extension status. When that status is present, footer mode shows the live connected/total value on the dedicated MCP line, suppresses the configured fallback count, and filters MCP out of the Help/Flow `Status:` segment.
 
 | Situation                                      | What the HUD shows                                | Where to check live status                           |
 | ---------------------------------------------- | ------------------------------------------------- | ---------------------------------------------------- |
 | `pi-mcp-adapter` is not installed              | No configured MCP section                         | Install the adapter before checking MCP state in Pi. |
 | Pi agent MCP config exists                     | Servers from Pi's agent MCP config                | Use `mcp({})` or `/mcp`.                             |
 | Pi agent config missing, legacy configs exist  | Configured server names                           | Use `mcp({})` or `/mcp`.                             |
-| Footer live `MCP:` status exists               | The live footer value, e.g. `MCP: 1/5 servers`    | Use `mcp({})` or `/mcp` for details.                 |
+| Footer live `MCP:` status exists               | Dedicated MCP line shows live count, e.g. `1/5 servers` | Use `mcp({})` or `/mcp` for details.            |
 | Server configured but not connected            | The server name can still appear outside live footer status | Use `mcp({})` or `/mcp`.                  |
 | Connected, failed, cached, or auth state       | Detailed per-server states are not shown directly | Use `mcp({})` or `/mcp`.                             |
 
