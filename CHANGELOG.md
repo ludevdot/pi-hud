@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.0
+
+### Minor Changes
+
+- c254508: Add a configurable switch shortcut for toggling between overlay and footer mode.
+
 ## 0.8.1
 
 ### Patch Changes
