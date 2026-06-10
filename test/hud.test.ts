@@ -1467,6 +1467,33 @@ describe("pi-hud extension", () => {
 		expect(notify).toHaveBeenLastCalledWith("HUD mode set to overlay.", "info");
 	});
 
+	test("/hud-mode restores expanded overlay after switching from minimized overlay through footer", async () => {
+		const { commands, shortcuts, ctx, capturedOptions } = createHarness();
+		const hudMode = commands.get("hud-mode")!;
+
+		await commands.get("hud")!.handler("", ctx);
+		await shortcuts.get("ctrl+h")!.handler(ctx);
+		expect(getOverlayOptions(capturedOptions[0]).width).toBe(26);
+
+		await hudMode.handler("footer", ctx);
+		await hudMode.handler("overlay", ctx);
+
+		expect(getOverlayOptions(capturedOptions[1]).width).toBe(42);
+	});
+
+	test("switch shortcut restores expanded overlay after switching from minimized overlay through footer", async () => {
+		const { commands, shortcuts, ctx, capturedOptions } = createHarness();
+
+		await commands.get("hud")!.handler("", ctx);
+		await shortcuts.get("ctrl+h")!.handler(ctx);
+		expect(getOverlayOptions(capturedOptions[0]).width).toBe(26);
+
+		await shortcuts.get("ctrl+.")!.handler(ctx);
+		await shortcuts.get("ctrl+.")!.handler(ctx);
+
+		expect(getOverlayOptions(capturedOptions[1]).width).toBe(42);
+	});
+
 	test("footer handles unknown session ids gracefully", async () => {
 		mockSettingsFile("/repo/project/.pi/settings.json", {
 			hud: { mode: "footer" },

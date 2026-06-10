@@ -223,6 +223,10 @@ export default function (pi: ExtensionAPI) {
 	};
 
 	const applyHudMode = (ctx: ExtensionContext, settings: HudSettings) => {
+		const previousMode = currentHudSettings?.mode;
+		if (previousMode !== undefined && previousMode !== settings.mode) {
+			manualCompactOverride = undefined;
+		}
 		currentHudSettings = settings;
 		if (settings.mode === "footer") {
 			showFooter(ctx, settings);
