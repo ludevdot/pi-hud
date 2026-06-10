@@ -299,6 +299,14 @@ export class HudComponent implements Component {
 			innerWidth,
 			this.theme.fg(
 				"dim",
+				`${formatShortcut(this.settings.switchShortcut)} switch mode`,
+			),
+		);
+		this.pushLine(
+			lines,
+			innerWidth,
+			this.theme.fg(
+				"dim",
 				`${formatShortcut(this.settings.minimizeShortcut)} minimize/expand`,
 			),
 		);

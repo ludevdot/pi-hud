@@ -117,6 +117,10 @@ function normalizeHudSettings(
 			typeof input.shortcut === "string"
 				? normalizeShortcut(input.shortcut, base.shortcut)
 				: base.shortcut,
+		switchShortcut:
+			typeof input.switchShortcut === "string"
+				? normalizeShortcut(input.switchShortcut, base.switchShortcut)
+				: base.switchShortcut,
 		minimizeShortcut:
 			typeof input.minimizeShortcut === "string"
 				? normalizeShortcut(input.minimizeShortcut, base.minimizeShortcut)
@@ -297,7 +301,11 @@ function updateHudSettingFromArgs(
 			message: `HUD position set to ${position}. Reopen /hud if it is currently visible.`,
 		};
 	}
-	if (key === "shortcut" || key === "minimizeShortcut") {
+	if (
+		key === "shortcut" ||
+		key === "switchShortcut" ||
+		key === "minimizeShortcut"
+	) {
 		const shortcut = normalizeShortcut(value, "");
 		if (shortcut.length === 0) return undefined;
 		return {
@@ -360,6 +368,7 @@ type HudSettingsModalEditableId =
 	| "mode"
 	| "position"
 	| "shortcut"
+	| "switchShortcut"
 	| "minimizeShortcut"
 	| "autoCompactWhileStreaming"
 	| "startupNotification"
@@ -435,7 +444,7 @@ async function openHudSettingsModal(
 						submenuOpen = open;
 					},
 				),
-				14,
+				16,
 				createSettingsListTheme(theme),
 				(id, newValue) => {
 					const action = id as HudSettingsModalActionId;
@@ -550,6 +559,23 @@ function createHudSettingsModalItems(
 				onSubmenuStateChange(true);
 				return createValueInputSubmenu(
 					"Shortcut",
+					currentValue,
+					theme,
+					(value) => {
+						onSubmenuStateChange(false);
+						done(value);
+					},
+				);
+			},
+		},
+		{
+			id: "switchShortcut",
+			label: "Switch shortcut",
+			currentValue: settings.switchShortcut,
+			submenu: (currentValue, done) => {
+				onSubmenuStateChange(true);
+				return createValueInputSubmenu(
+					"Switch shortcut",
 					currentValue,
 					theme,
 					(value) => {
@@ -812,6 +838,8 @@ function formatHudSettingLabel(id: HudSettingsModalEditableId): string {
 			return "position";
 		case "shortcut":
 			return "shortcut";
+		case "switchShortcut":
+			return "switch shortcut";
 		case "minimizeShortcut":
 			return "minimize shortcut";
 		case "autoCompactWhileStreaming":
@@ -842,6 +870,8 @@ function formatHudSettingValue(
 			return settings.position;
 		case "shortcut":
 			return settings.shortcut;
+		case "switchShortcut":
+			return settings.switchShortcut;
 		case "minimizeShortcut":
 			return settings.minimizeShortcut;
 		case "autoCompactWhileStreaming":
@@ -932,7 +962,7 @@ function withReloadNotice(message: string): string {
 }
 
 function getHudSettingsUsage(): string {
-	return "Usage: /hud-settings mode|position|shortcut|minimizeShortcut|autoCompactWhileStreaming|startupNotification|usageDisplay|contextIndicator|expandedWidth|compactWidth|minTerminalWidth <value> or visibility [context|project|worktrees|mcps <on|off>]";
+	return "Usage: /hud-settings mode|position|shortcut|switchShortcut|minimizeShortcut|autoCompactWhileStreaming|startupNotification|usageDisplay|contextIndicator|expandedWidth|compactWidth|minTerminalWidth <value> or visibility [context|project|worktrees|mcps <on|off>]";
 }
 
 function parseBoolean(value: string): boolean | undefined {
@@ -964,6 +994,7 @@ function serializeHudSettings(settings: HudSettings): Record<string, unknown> {
 		mode: settings.mode,
 		position: settings.position,
 		shortcut: settings.shortcut,
+		switchShortcut: settings.switchShortcut,
 		minimizeShortcut: settings.minimizeShortcut,
 		autoCompactWhileStreaming: settings.autoCompactWhileStreaming,
 		startupNotification: settings.startupNotification,

@@ -64,6 +64,7 @@ export interface HudSettings {
 	mode: HudMode;
 	position: OverlayAnchor;
 	shortcut: string;
+	switchShortcut: string;
 	minimizeShortcut: string;
 	autoCompactWhileStreaming: boolean;
 	startupNotification: boolean;

@@ -171,6 +171,7 @@ describe("pi-hud extension", () => {
 		process.env.PI_CODING_AGENT_DIR = "/agent";
 		expect(readHudSettings("/repo/project")).toMatchObject({
 			mode: "overlay",
+			switchShortcut: "ctrl+s",
 			usageDisplay: "metered",
 			contextIndicator: "icon",
 			visibility: {
@@ -341,6 +342,7 @@ describe("pi-hud extension", () => {
 		expect(rendered).toContain("overlay");
 		expect(rendered).toContain("Position");
 		expect(rendered).toContain("Shortcut");
+		expect(rendered).toContain("Switch shortcut");
 		expect(rendered).toContain("Minimize shortcut");
 		expect(rendered).toContain("Auto-compact while streaming");
 		expect(rendered).toContain("Startup notification");
@@ -397,7 +399,7 @@ describe("pi-hud extension", () => {
 			throw new Error("Expected HUD settings modal to handle input.");
 		}
 
-		for (let index = 0; index < 8; index += 1) {
+		for (let index = 0; index < 9; index += 1) {
 			settingsComponent.handleInput("\x1b[B");
 		}
 		settingsComponent.handleInput(" ");
@@ -452,7 +454,11 @@ describe("pi-hud extension", () => {
 		expect(commands.has("hud-mode")).toBe(true);
 		expect(commands.has("sidebar")).toBe(false);
 		expect(commands.has("session-sidebar")).toBe(false);
-		expect([...shortcuts.keys()].sort()).toEqual(["ctrl+h", "ctrl+shift+h"]);
+		expect([...shortcuts.keys()].sort()).toEqual([
+			"ctrl+h",
+			"ctrl+s",
+			"ctrl+shift+h",
+		]);
 	});
 
 	test("shows a UI-only notification when an interactive session starts and skips reload", async () => {
@@ -729,6 +735,7 @@ describe("pi-hud extension", () => {
 		expect(rendered).not.toContain("Git worktrees");
 		expect(rendered).not.toContain("MCP");
 		expect(rendered).toContain("/hud or ctrl+shift+h hide/show");
+		expect(rendered).toContain("ctrl+s switch mode");
 		expect(rendered).toContain("ctrl+h minimize/expand");
 	});
 
@@ -866,6 +873,20 @@ describe("pi-hud extension", () => {
 		);
 		expect(notify).toHaveBeenCalledWith(
 			"HUD position set to bottom-right. Reopen /hud if it is currently visible.",
+			"info",
+		);
+
+		await commands
+			.get("hud-settings")!
+			.handler("switchShortcut ctrl+alt+s", ctx);
+
+		expect(writeFileSync).toHaveBeenCalledWith(
+			"/repo/project/.pi/settings.json",
+			expect.stringContaining('"switchShortcut": "ctrl+alt+s"'),
+			"utf8",
+		);
+		expect(notify).toHaveBeenCalledWith(
+			"HUD switchShortcut saved. Run /reload for the shortcut registration to change.",
 			"info",
 		);
 
@@ -1404,6 +1425,30 @@ describe("pi-hud extension", () => {
 			"Usage: /hud-mode [footer|overlay]",
 			"warning",
 		);
+	});
+
+	test("switch shortcut toggles between footer and overlay immediately", async () => {
+		const { shortcuts, ctx, custom, notify, setFooter } = createHarness();
+
+		await shortcuts.get("ctrl+s")!.handler(ctx);
+		expect(writeFileSync).toHaveBeenLastCalledWith(
+			"/repo/project/.pi/settings.json",
+			expect.stringContaining('"mode": "footer"'),
+			"utf8",
+		);
+		expect(setFooter).toHaveBeenCalledTimes(1);
+		expect(custom).not.toHaveBeenCalled();
+		expect(notify).toHaveBeenLastCalledWith("HUD mode set to footer.", "info");
+
+		await shortcuts.get("ctrl+s")!.handler(ctx);
+		expect(writeFileSync).toHaveBeenLastCalledWith(
+			"/repo/project/.pi/settings.json",
+			expect.stringContaining('"mode": "overlay"'),
+			"utf8",
+		);
+		expect(setFooter).toHaveBeenLastCalledWith(undefined);
+		expect(custom).toHaveBeenCalledTimes(1);
+		expect(notify).toHaveBeenLastCalledWith("HUD mode set to overlay.", "info");
 	});
 
 	test("footer handles unknown session ids gracefully", async () => {

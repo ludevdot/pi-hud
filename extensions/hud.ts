@@ -247,6 +247,17 @@ export default function (pi: ExtensionAPI) {
 		requestHudRender();
 	};
 
+	const switchHudMode = (ctx: ExtensionContext) => {
+		const projectPath = getProjectPath(ctx);
+		const currentSettings = currentHudSettings ?? readHudSettings(projectPath);
+		const mode: HudMode =
+			currentSettings.mode === "footer" ? "overlay" : "footer";
+		const settings = { ...currentSettings, mode };
+		writeProjectHudSettings(projectPath, settings);
+		applyHudMode(ctx, settings);
+		ctx.ui.notify(`HUD mode set to ${mode}.`, "info");
+	};
+
 	const notifySessionStart = (event: unknown, ctx: ExtensionContext) => {
 		if (!ctx.hasUI || isCLICommand()) return;
 		const settings = currentHudSettings ?? readHudSettings(getProjectPath(ctx));
@@ -405,6 +416,15 @@ export default function (pi: ExtensionAPI) {
 			description: "Toggle the session HUD",
 			handler: (ctx: ExtensionContext) => {
 				toggleHud(ctx);
+			},
+		});
+	}
+	const startupSwitchShortcut = toShortcutKey(startupSettings.switchShortcut);
+	if (startupSwitchShortcut) {
+		pi.registerShortcut(startupSwitchShortcut, {
+			description: "Switch Pi HUD between overlay and footer mode",
+			handler: (ctx: ExtensionContext) => {
+				switchHudMode(ctx);
 			},
 		});
 	}

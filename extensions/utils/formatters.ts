@@ -5,7 +5,7 @@ export function formatHudSettings(settings: HudSettings): string {
 	const visibility = HUD_VISIBILITY_KEYS.map(
 		(key) => `${key}:${settings.visibility[key] ? "on" : "off"}`,
 	).join(", ");
-	return `HUD mode=${settings.mode}, position=${settings.position}, shortcut=${settings.shortcut || "disabled"}, minimizeShortcut=${settings.minimizeShortcut || "disabled"}, autoCompactWhileStreaming=${settings.autoCompactWhileStreaming}, startupNotification=${settings.startupNotification}, usageDisplay=${settings.usageDisplay}, contextIndicator=${settings.contextIndicator}, expandedWidth=${settings.expandedWidth}, compactWidth=${settings.compactWidth}, minTerminalWidth=${settings.minTerminalWidth}, visibility=${visibility}`;
+	return `HUD mode=${settings.mode}, position=${settings.position}, shortcut=${settings.shortcut || "disabled"}, switchShortcut=${settings.switchShortcut || "disabled"}, minimizeShortcut=${settings.minimizeShortcut || "disabled"}, autoCompactWhileStreaming=${settings.autoCompactWhileStreaming}, startupNotification=${settings.startupNotification}, usageDisplay=${settings.usageDisplay}, contextIndicator=${settings.contextIndicator}, expandedWidth=${settings.expandedWidth}, compactWidth=${settings.compactWidth}, minTerminalWidth=${settings.minTerminalWidth}, visibility=${visibility}`;
 }
 
 export function formatShortcut(shortcut: string): string {

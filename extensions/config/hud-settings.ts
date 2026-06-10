@@ -59,6 +59,7 @@ export const DEFAULT_HUD_SETTINGS: HudSettings = {
 	mode: "overlay",
 	position: "top-right",
 	shortcut: "ctrl+shift+h",
+	switchShortcut: "ctrl+s",
 	minimizeShortcut: "ctrl+h",
 	autoCompactWhileStreaming: true,
 	startupNotification: true,

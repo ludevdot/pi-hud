@@ -25,6 +25,7 @@ It can run as the default right-side overlay or as an opt-in footer replacement.
 - `/hud-mode` command to switch between overlay and footer mode.
 - `/hud-settings` configuration command.
 - Default hide/show keyboard shortcut: `ctrl+shift+h`.
+- Default overlay/footer switch shortcut: `ctrl+s`.
 - Default minimize/expand keyboard shortcut: `ctrl+h`.
 - Non-blocking TUI overlay: keep typing while the hud is visible.
 - Live subagent status:
@@ -114,7 +115,7 @@ The HUD opens automatically on session start. Inside Pi, run:
 /hud
 ```
 
-Run `/hud` again, or press `ctrl+shift+h`, to hide or show the overlay. Press `ctrl+h` to minimize or expand the overlay. To replace Pi's built-in footer with the HUD footer, run `/hud-mode footer`.
+Run `/hud` again, or press `ctrl+shift+h`, to hide or show the overlay. Press `ctrl+s` to switch between overlay and footer mode. Press `ctrl+h` to minimize or expand the overlay. To replace Pi's built-in footer with the HUD footer, run `/hud-mode footer`.
 
 ## Commands
 
@@ -136,6 +137,7 @@ Defaults:
     "mode": "overlay",
     "position": "top-right",
     "shortcut": "ctrl+shift+h",
+    "switchShortcut": "ctrl+s",
     "minimizeShortcut": "ctrl+h",
     "autoCompactWhileStreaming": true,
     "startupNotification": true,
@@ -155,7 +157,7 @@ Defaults:
 
 Supported `position` values are `center`, `top-left`, `top-right`, `bottom-left`, `bottom-right`, `top-center`, `bottom-center`, `left-center`, and `right-center`.
 
-`mode` controls where Pi HUD renders. `overlay` is the default right-side HUD. `footer` replaces Pi's built-in footer with Pi HUD's compact multi-line footer. You can persist it in settings or switch immediately with `/hud-mode footer` and `/hud-mode overlay`.
+`mode` controls where Pi HUD renders. `overlay` is the default right-side HUD. `footer` replaces Pi's built-in footer with Pi HUD's compact multi-line footer. You can persist it in settings, switch immediately with `/hud-mode footer` and `/hud-mode overlay`, or press the configured `switchShortcut`.
 
 Run `/hud-settings` with no arguments to open the centered HUD Settings modal. The modal shows current values, lets you edit settings, shows the current serialized configuration, and can restore defaults. Argument-based commands such as `/hud-settings mode footer` and `/hud-settings visibility context off` remain available for direct updates.
 
@@ -171,6 +173,7 @@ Examples:
 /hud-settings mode footer
 /hud-settings position bottom-right
 /hud-settings shortcut ctrl+shift+h
+/hud-settings switchShortcut ctrl+s
 /hud-settings minimizeShortcut ctrl+h
 /hud-settings autoCompactWhileStreaming off
 /hud-settings startupNotification off
@@ -243,7 +246,7 @@ Write shortcuts as `modifier+key`, using lowercase names. Multiple modifiers can
 
 For macOS users, write Option shortcuts as `alt+key`, not `option+key`. Command shortcuts are usually reserved by macOS or the terminal app, so they are not portable for HUD bindings.
 
-> **macOS note:** Function keys such as `f2` can be intercepted by macOS, terminal emulators, keyboard settings, or multiplexers before Pi receives them. The default `ctrl+shift+h` avoids function keys and is usually more portable. If your terminal collapses `ctrl+shift+h` into `ctrl+h`, use another shortcut such as `ctrl+alt+h` and run `/reload`.
+> **macOS note:** Function keys such as `f2` can be intercepted by macOS, terminal emulators, keyboard settings, or multiplexers before Pi receives them. The default `ctrl+shift+h` avoids function keys and is usually more portable. `ctrl+s` may be captured by terminals with software flow control enabled; if it does not reach Pi, use another `switchShortcut` such as `ctrl+alt+s` and run `/reload`. If your terminal collapses `ctrl+shift+h` into `ctrl+h`, use another shortcut such as `ctrl+alt+h` and run `/reload`.
 
 ### Recommended profiles
 
@@ -330,7 +333,7 @@ Use this on wide monitors to reduce truncation in the expanded HUD.
 }
 ```
 
-Shortcut changes require `/reload` because shortcuts are registered when the extension loads. Do not bind HUD shortcuts to `enter`, `return`, `alt+m`, `ctrl+m`, `ctrl+shift+m`, `ctrl+j`, or `ctrl+shift+j`; those conflict with Pi or terminal input keys.
+Shortcut changes require `/reload` because shortcuts are registered when the extension loads. Do not bind HUD shortcuts to `enter`, `return`, `alt+m`, `ctrl+m`, `ctrl+shift+m`, `ctrl+j`, or `ctrl+shift+j`; those conflict with Pi or terminal input keys. If your terminal uses `ctrl+s` for software flow control, change `switchShortcut` to another binding and reload.
 
 ## Notes
 
