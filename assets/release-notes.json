@@ -1,11 +1,11 @@
 {
-	"version": "0.9.1",
-	"previousTag": "v-0.9.0-RELEASE",
-	"generatedAt": "2026-06-10T21:15:57.458Z",
+	"version": "0.9.2",
+	"previousTag": "v-0.9.1-RELEASE",
+	"generatedAt": "2026-06-10T21:46:59.510Z",
 	"commits": [
 		{
-			"hash": "4d6678d",
-			"subject": "fix(hud): avoid reserved switch shortcut (#139)"
+			"hash": "6a08528",
+			"subject": "fix(hud): reset compact override on mode switch (#143)"
 		}
 	]
 }

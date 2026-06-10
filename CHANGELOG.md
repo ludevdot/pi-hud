@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.2
+
+### Patch Changes
+
+- Fix minimized overlays returning compact after switching through footer mode.
+
 ## 0.9.1
 
 ### Patch Changes
