@@ -815,6 +815,23 @@ describe("pi-hud extension", () => {
 		expect(rendered).not.toContain("Very Long Model Name For Header");
 	});
 
+	test("shows unknown context in compact overlay when post-compaction usage is unknown", async () => {
+		const { commands, shortcuts, ctx, capturedComponents } = createHarness({
+			contextTokens: null,
+			contextPercent: null,
+			contextWindow: 100,
+			showThemeColors: true,
+		});
+
+		await commands.get("hud")!.handler("", ctx);
+		await shortcuts.get("ctrl+h")!.handler(ctx);
+		const rendered = capturedComponents[0]!.render(80).join("\n");
+
+		expect(rendered).toContain("<dim>ctx unknown</dim>");
+		expect(rendered).not.toContain("% ctx");
+		expect(rendered).not.toContain("1275.0%");
+	});
+
 	test.each([
 		{ percent: 49, expected: "<accent>49.0% ctx</accent>" },
 		{ percent: 50, expected: "<warning>50.0% ctx !</warning>" },
@@ -858,6 +875,37 @@ describe("pi-hud extension", () => {
 		const rendered = capturedComponents[0]!.render(80).join("\n");
 
 		expect(rendered).toContain(expected);
+	});
+
+	test("shows unknown context in expanded overlay when post-compaction usage is unknown", async () => {
+		const { commands, ctx, capturedComponents } = createHarness({
+			contextTokens: null,
+			contextPercent: null,
+			contextWindow: 100,
+			showThemeColors: true,
+		});
+
+		await commands.get("hud")!.handler("", ctx);
+		const rendered = capturedComponents[0]!.render(80).join("\n");
+
+		expect(rendered).toContain("<dim>ctx unknown</dim>");
+		expect(rendered).toContain("tokens unknown");
+		expect(rendered).toContain("<dim>usage unknown</dim>");
+		expect(rendered).not.toContain("1.3k tokens");
+		expect(rendered).not.toContain("1275.0% used");
+	});
+
+	test("falls back to session totals when context usage API is unavailable", async () => {
+		const { commands, ctx, capturedComponents } = createHarness({
+			omitContextUsage: true,
+			showThemeColors: true,
+		});
+
+		await commands.get("hud")!.handler("", ctx);
+		const rendered = capturedComponents[0]!.render(80).join("\n");
+
+		expect(rendered).toContain("1.3k tokens");
+		expect(rendered).toContain("<accent>0.6% used</accent>");
 	});
 
 	test("skips worktree lookup while compact", async () => {
@@ -1104,6 +1152,57 @@ describe("pi-hud extension", () => {
 		expect(footerText).not.toContain("12.0k tokens");
 		expect(footerText).not.toContain("$0.01000 spent");
 		expect(footerText).not.toContain("thinking: medium");
+	});
+
+	test("footer icon indicator shows unknown when post-compaction usage is unknown", async () => {
+		mockSettingsFile("/repo/project/.pi/settings.json", {
+			hud: { mode: "footer" },
+		});
+		const { eventHandlers, ctx, capturedFooterComponents } = createHarness({
+			contextTokens: null,
+			contextPercent: null,
+			contextWindow: 100,
+			showThemeColors: true,
+		});
+
+		for (const handler of eventHandlers.get("session_start") ?? []) {
+			await handler({ type: "session_start" }, ctx);
+		}
+
+		const contextLine = capturedFooterComponents[0]!.render(140)[1]!;
+		const plainContextLine = unwrapBg(contextLine);
+		expect(contextLine).toContain("<dim>unknown</dim>");
+		expect(plainContextLine).toContain(
+			"🧠 Context  unknown tokens │ unknown used/100 ctx",
+		);
+		expect(plainContextLine).not.toContain("1.3k tokens");
+		expect(plainContextLine).not.toContain("1275.0%");
+	});
+
+	test("footer bar indicator shows empty unknown bar when post-compaction usage is unknown", async () => {
+		setCapabilities({ images: null, trueColor: true, hyperlinks: false });
+		mockSettingsFile("/repo/project/.pi/settings.json", {
+			hud: { mode: "footer", contextIndicator: "bar" },
+		});
+		const { eventHandlers, ctx, capturedFooterComponents } = createHarness({
+			contextTokens: null,
+			contextPercent: null,
+			contextWindow: 100,
+			showThemeColors: true,
+		});
+
+		for (const handler of eventHandlers.get("session_start") ?? []) {
+			await handler({ type: "session_start" }, ctx);
+		}
+
+		const contextLine = capturedFooterComponents[0]!.render(140)[1]!;
+		const plainContextLine = unwrapBg(contextLine);
+		expect(contextLine).toContain("<dim>░░░░░░░░░░░░░░░░░░░░</dim>");
+		expect(contextLine).toContain("<dim>unknown</dim>");
+		expect(plainContextLine).toContain(
+			"🧠 Context  unknown tokens │ [░░░░░░░░░░░░░░░░░░░░] unknown used/100 ctx",
+		);
+		expect(plainContextLine).not.toContain("1275.0%");
 	});
 
 	test("footer context indicator can render a colored bar in metered mode", async () => {

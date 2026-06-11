@@ -1,5 +1,6 @@
 import type { AssistantMessage } from "@earendil-works/pi-ai";
 import type {
+	ContextUsage,
 	ExtensionAPI,
 	ExtensionContext,
 	ExtensionUIContext,
@@ -81,12 +82,12 @@ export class HudFooter implements Component {
 		const contextUsage = this.ctx.getContextUsage?.();
 		const contextWindow =
 			contextUsage?.contextWindow ?? this.ctx.model?.contextWindow ?? 0;
-		const contextTokens = contextUsage?.tokens ?? stats.totalTokens;
-		const contextPercent =
-			contextUsage?.percent ??
-			(contextWindow > 0 && contextTokens !== null
-				? (contextTokens / contextWindow) * 100
-				: null);
+		const contextTokens = resolveContextTokens(contextUsage, stats);
+		const contextPercent = resolveContextPercent(
+			contextUsage,
+			contextTokens,
+			contextWindow,
+		);
 		const contextIndicatorSegment = formatContextIndicatorSegment(
 			contextPercent,
 			this.settings.contextIndicator,
@@ -167,6 +168,28 @@ export class HudFooter implements Component {
 			applyTextStyles(padded, styles, this.theme),
 		);
 	}
+}
+
+function resolveContextTokens(
+	contextUsage: ContextUsage | undefined,
+	stats: SessionStats,
+): number | null {
+	if (contextUsage === undefined) return stats.totalTokens;
+	if (contextUsage.tokens === undefined) return stats.totalTokens;
+	return contextUsage.tokens;
+}
+
+function resolveContextPercent(
+	contextUsage: ContextUsage | undefined,
+	contextTokens: number | null,
+	contextWindow: number,
+): number | null {
+	if (contextUsage !== undefined && contextUsage.percent !== undefined) {
+		return contextUsage.percent;
+	}
+	return contextWindow > 0 && contextTokens !== null
+		? (contextTokens / contextWindow) * 100
+		: null;
 }
 
 function formatContextLine(options: {

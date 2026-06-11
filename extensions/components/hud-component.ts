@@ -1,5 +1,6 @@
 import type { AssistantMessage } from "@earendil-works/pi-ai";
 import type {
+	ContextUsage,
 	ExtensionAPI,
 	ExtensionContext,
 	Theme,
@@ -63,10 +64,12 @@ export class HudComponent implements Component {
 		const contextUsage = this.ctx.getContextUsage?.();
 		const contextWindow =
 			contextUsage?.contextWindow ?? model?.contextWindow ?? 0;
-		const contextTokens = contextUsage?.tokens ?? stats.totalTokens;
-		const contextPercent =
-			contextUsage?.percent ??
-			(contextWindow > 0 ? (contextTokens / contextWindow) * 100 : null);
+		const contextTokens = resolveContextTokens(contextUsage, stats);
+		const contextPercent = resolveContextPercent(
+			contextUsage,
+			contextTokens,
+			contextWindow,
+		);
 		const innerWidth = Math.max(1, width - 2);
 		const lines: string[] = [];
 		const modelLabel = getModelLabel(model);
@@ -387,6 +390,28 @@ export class HudComponent implements Component {
 			this.theme.fg("border", "│") + content + this.theme.fg("border", "│"),
 		);
 	}
+}
+
+function resolveContextTokens(
+	contextUsage: ContextUsage | undefined,
+	stats: SessionStats,
+): number | null {
+	if (contextUsage === undefined) return stats.totalTokens;
+	if (contextUsage.tokens === undefined) return stats.totalTokens;
+	return contextUsage.tokens;
+}
+
+function resolveContextPercent(
+	contextUsage: ContextUsage | undefined,
+	contextTokens: number | null,
+	contextWindow: number,
+): number | null {
+	if (contextUsage !== undefined && contextUsage.percent !== undefined) {
+		return contextUsage.percent;
+	}
+	return contextWindow > 0 && contextTokens !== null
+		? (contextTokens / contextWindow) * 100
+		: null;
 }
 
 function formatProjectTitle(projectPath: string): string | null {

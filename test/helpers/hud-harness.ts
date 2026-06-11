@@ -49,7 +49,10 @@ interface HarnessOptions {
 	resolveCustom?: boolean;
 	mcpAdapter?: boolean;
 	modelName?: string;
-	contextPercent?: number;
+	contextTokens?: number | null;
+	contextWindow?: number;
+	contextPercent?: number | null;
+	omitContextUsage?: boolean;
 	showThemeColors?: boolean;
 	selectChoices?: Array<string | undefined>;
 	inputValues?: Array<string | undefined>;
@@ -184,6 +187,14 @@ export function createHarness(options: HarnessOptions = {}): HudHarness {
 		},
 	};
 
+	const contextTokens = Object.hasOwn(options, "contextTokens")
+		? (options.contextTokens ?? null)
+		: 12_000;
+	const contextWindow = options.contextWindow ?? 200_000;
+	const contextPercent = Object.hasOwn(options, "contextPercent")
+		? (options.contextPercent ?? null)
+		: 6;
+
 	const ctx = {
 		hasUI: true,
 		ui: {
@@ -195,11 +206,13 @@ export function createHarness(options: HarnessOptions = {}): HudHarness {
 			input,
 		} as unknown as ExtensionCommandContext["ui"],
 		cwd: "/repo",
-		getContextUsage: () => ({
-			tokens: 12_000,
-			contextWindow: 200_000,
-			percent: options.contextPercent ?? 6,
-		}),
+		getContextUsage: options.omitContextUsage
+			? undefined
+			: () => ({
+					tokens: contextTokens,
+					contextWindow,
+					percent: contextPercent,
+				}),
 		sessionManager: {
 			getSessionName: () => undefined,
 			getSessionId: () => options.sessionId ?? "session-1234",
@@ -210,7 +223,7 @@ export function createHarness(options: HarnessOptions = {}): HudHarness {
 			id: "model-id",
 			name: options.modelName ?? "Model Name",
 			reasoning: options.modelReasoning ?? true,
-			contextWindow: 200_000,
+			contextWindow,
 		},
 	} as unknown as ExtensionCommandContext;
 
