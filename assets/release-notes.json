@@ -1,11 +1,15 @@
 {
-	"version": "0.9.2",
-	"previousTag": "v-0.9.1-RELEASE",
-	"generatedAt": "2026-06-10T21:46:59.510Z",
+	"version": "0.9.3",
+	"previousTag": "v-0.9.2-RELEASE",
+	"generatedAt": "2026-06-11T15:40:30.882Z",
 	"commits": [
 		{
-			"hash": "6a08528",
-			"subject": "fix(hud): reset compact override on mode switch (#143)"
+			"hash": "394769c",
+			"subject": "fix(hud): preserve unknown context after compaction (#146)"
+		},
+		{
+			"hash": "3cfeb57",
+			"subject": "docs(release): require approved release issue"
 		}
 	]
 }

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.3
+
+### Patch Changes
+
+- Preserve unknown context usage after compaction so the HUD no longer shows impossible percentages in overlay or footer mode.
+
 ## 0.9.2
 
 ### Patch Changes
