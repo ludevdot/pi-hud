@@ -1,15 +1,15 @@
 {
-	"version": "0.9.3",
-	"previousTag": "v-0.9.2-RELEASE",
-	"generatedAt": "2026-06-11T15:40:30.882Z",
+	"version": "0.9.4",
+	"previousTag": "v-0.9.3-RELEASE",
+	"generatedAt": "2026-06-19T14:29:10.261Z",
 	"commits": [
 		{
-			"hash": "394769c",
-			"subject": "fix(hud): preserve unknown context after compaction (#146)"
+			"hash": "4366c2a",
+			"subject": "chore(deps): bump actions/checkout from 6 to 7 (#153)"
 		},
 		{
-			"hash": "3cfeb57",
-			"subject": "docs(release): require approved release issue"
+			"hash": "08d3b84",
+			"subject": "chore(deps): update Pi package refresh policy (#152)"
 		}
 	]
 }

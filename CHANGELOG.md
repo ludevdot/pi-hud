@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.4
+
+### Patch Changes
+
+- Refresh Pi package compatibility dependencies, group future Pi package updates, and update workflow checkout actions.
+
 ## 0.9.3
 
 ### Patch Changes

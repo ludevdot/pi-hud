@@ -8,6 +8,8 @@ overrides:
   js-yaml: 4.2.0
   # via @google/genai; fixes protobufjs <=7.6.2 advisory
   protobufjs: 7.6.3
+  # via @changesets/cli; keeps Changesets compatible with js-yaml 4
+  read-yaml-file: 2.1.0
   # via @earendil-works/pi-coding-agent; fixes undici <8.5.0 advisories
   undici: 8.5.0
   # via vitest; fixes vite <=7.3.4 advisories
