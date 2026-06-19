@@ -1,16 +1,27 @@
+# Security overrides for audited transitive dependencies that are below patched
+# advisory versions through current direct dependencies. Remove an entry only
+# after `pnpm audit --audit-level moderate` stays clean without it.
+overrides:
+  # via vite/vitest; fixes esbuild advisory in older 0.27.x releases
+  esbuild: 0.28.1
+  # via @changesets/cli; fixes js-yaml <=4.1.1 advisory
+  js-yaml: 4.2.0
+  # via @google/genai; fixes protobufjs <=7.6.2 advisory
+  protobufjs: 7.6.3
+  # via @earendil-works/pi-coding-agent; fixes undici <8.5.0 advisories
+  undici: 8.5.0
+  # via vitest; fixes vite <=7.3.4 advisories
+  vite: 7.3.5
+
 allowBuilds:
   "@google/genai": true
   esbuild: true
   protobufjs: true
 
 # Keep pnpm 11's default 24-hour release-age gate, but allow the
-# already-reviewed Pi 0.77.0 dependency refresh merged in #77 to install before
-# the cooldown expires.
+# already-reviewed clipboard optional native packages to install before the
+# cooldown expires.
 minimumReleaseAgeExclude:
-  - "@earendil-works/pi-agent-core@0.77.0"
-  - "@earendil-works/pi-ai@0.77.0"
-  - "@earendil-works/pi-coding-agent@0.77.0"
-  - "@earendil-works/pi-tui@0.77.0"
   - "@mariozechner/clipboard@0.3.9"
   - "@mariozechner/clipboard-darwin-arm64@0.3.9"
   - "@mariozechner/clipboard-darwin-universal@0.3.9"

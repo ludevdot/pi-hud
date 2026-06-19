@@ -2,13 +2,19 @@ version: 2
 updates:
   - package-ecosystem: "npm"
     directory: "/"
+    # Pi extension compatibility depends on tracking Pi package releases quickly,
+    # but grouped updates keep reviewer workload and lockfile churn bounded.
     schedule:
-      interval: "weekly"
+      interval: "daily"
     cooldown:
-      default-days: 7
+      default-days: 1
       semver-major-days: 14
-      semver-minor-days: 7
-      semver-patch-days: 3
+      semver-minor-days: 1
+      semver-patch-days: 1
+    groups:
+      pi-packages:
+        patterns:
+          - "@earendil-works/pi-*"
     open-pull-requests-limit: 5
 
   - package-ecosystem: "github-actions"
