@@ -1,5 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { writeFileSync } from "node:fs";
+import { homedir } from "node:os";
 import {
 	resetCapabilitiesCache,
 	setCapabilities,
@@ -1035,7 +1036,7 @@ describe("pi-hud extension", () => {
 		expect(rendered).toContain("github");
 	});
 
-	test("prefers Pi agent MCP config over stale project MCP config", async () => {
+	test("merges Pi agent and project MCP config sources", async () => {
 		process.env.PI_CODING_AGENT_DIR = "/agent";
 		mockSettingsFile("/agent/mcp.json", {
 			mcpServers: { context7: {}, engram: {} },
@@ -1053,12 +1054,12 @@ describe("pi-hud extension", () => {
 		expect(rendered).toContain("Configured MCPs");
 		expect(rendered).toContain("context7");
 		expect(rendered).toContain("engram");
-		expect(rendered).not.toContain("codegraph");
-		expect(rendered).not.toContain("playwright");
-		expect(rendered).not.toContain("rag-mcp");
+		expect(rendered).toContain("codegraph");
+		expect(rendered).toContain("playwright");
+		expect(rendered).toContain("rag-mcp");
 	});
 
-	test("does not fall back to stale project MCP config when Pi agent config is empty", async () => {
+	test("includes project MCP config when Pi agent config is empty", async () => {
 		process.env.PI_CODING_AGENT_DIR = "/agent";
 		mockSettingsFile("/agent/mcp.json", { mcpServers: {} });
 		mockSettingsFile("/repo/project/.mcp.json", {
@@ -1072,10 +1073,39 @@ describe("pi-hud extension", () => {
 
 		const rendered = capturedComponents[0]?.render(42).join("\n");
 		expect(rendered).toContain("Configured MCPs");
-		expect(rendered).toContain("adapter installed");
-		expect(rendered).not.toContain("codegraph");
-		expect(rendered).not.toContain("playwright");
-		expect(rendered).not.toContain("rag-mcp");
+		expect(rendered).toContain("codegraph");
+		expect(rendered).toContain("playwright");
+		expect(rendered).toContain("rag-mcp");
+		expect(rendered).not.toContain("adapter installed");
+	});
+
+	test("merges standard and Pi-owned MCP config sources", async () => {
+		process.env.PI_CODING_AGENT_DIR = "/agent";
+		mockSettingsFile(`${homedir()}/.config/mcp/mcp.json`, {
+			mcpServers: { global: {}, shared: {} },
+		});
+		mockSettingsFile("/agent/mcp.json", {
+			mcpServers: { agent: {}, shared: {} },
+		});
+		mockSettingsFile("/repo/project/.mcp.json", {
+			"mcp-servers": { project: {}, shared: {} },
+		});
+		mockSettingsFile("/repo/project/.pi/mcp.json", {
+			mcpServers: { "pi-project": {} },
+		});
+		const { commands, ctx, capturedComponents } = createHarness({
+			mcpAdapter: true,
+		});
+
+		await expectCommandReturnsPromptly(commands.get("hud")!, ctx);
+
+		const rendered = capturedComponents[0]?.render(42).join("\n");
+		expect(rendered).toContain("Configured MCPs");
+		expect(rendered).toContain("global");
+		expect(rendered).toContain("agent");
+		expect(rendered).toContain("project");
+		expect(rendered).toContain("pi-project");
+		expect(rendered?.match(/shared/g)).toHaveLength(1);
 	});
 
 	test("starts as overlay by default and leaves the built-in footer alone", async () => {

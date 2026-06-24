@@ -27,15 +27,8 @@ function isMcpAdapterSource(source: string): boolean {
 }
 
 function getConfiguredMcpServers(cwd: string): string[] {
-	const agentConfigServers = readExistingMcpServerNames(
-		getPiAgentMcpConfigPath(),
-	);
-	if (agentConfigServers !== undefined) {
-		return sortServerNames(agentConfigServers);
-	}
-
 	const names = new Set<string>();
-	for (const path of getFallbackMcpConfigPaths(cwd)) {
+	for (const path of getMcpConfigPaths(cwd)) {
 		for (const name of readExistingMcpServerNames(path) ?? []) {
 			names.add(name);
 		}
@@ -49,9 +42,10 @@ function getPiAgentMcpConfigPath(): string {
 	return join(agentDir, "mcp.json");
 }
 
-function getFallbackMcpConfigPaths(cwd: string): string[] {
+function getMcpConfigPaths(cwd: string): string[] {
 	return [
 		join(homedir(), ".config", "mcp", "mcp.json"),
+		getPiAgentMcpConfigPath(),
 		join(cwd, ".mcp.json"),
 		join(cwd, ".pi", "mcp.json"),
 	];
@@ -61,8 +55,10 @@ function readExistingMcpServerNames(path: string): string[] | undefined {
 	if (!existsSync(path)) return undefined;
 	try {
 		const parsed: unknown = JSON.parse(readFileSync(path, "utf8"));
-		if (!isRecord(parsed) || !isRecord(parsed.mcpServers)) return [];
-		return Object.keys(parsed.mcpServers);
+		if (!isRecord(parsed)) return [];
+		const servers = parsed.mcpServers ?? parsed["mcp-servers"];
+		if (!isRecord(servers)) return [];
+		return Object.keys(servers);
 	} catch {
 		return [];
 	}
