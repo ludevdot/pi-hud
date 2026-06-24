@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.5
+
+### Patch Changes
+
+- Align configured MCP discovery with pi-mcp-adapter config sources while keeping adapter support optional and runtime-detected.
+
 ## 0.9.4
 
 ### Patch Changes

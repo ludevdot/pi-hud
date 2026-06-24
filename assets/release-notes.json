@@ -1,15 +1,11 @@
 {
-	"version": "0.9.4",
-	"previousTag": "v-0.9.3-RELEASE",
-	"generatedAt": "2026-06-19T14:29:10.261Z",
+	"version": "0.9.5",
+	"previousTag": "v-0.9.4-RELEASE",
+	"generatedAt": "2026-06-24T07:58:35.631Z",
 	"commits": [
 		{
-			"hash": "4366c2a",
-			"subject": "chore(deps): bump actions/checkout from 6 to 7 (#153)"
-		},
-		{
-			"hash": "08d3b84",
-			"subject": "chore(deps): update Pi package refresh policy (#152)"
+			"hash": "2193a7c",
+			"subject": "fix(hud): align MCP config discovery"
 		}
 	]
 }
