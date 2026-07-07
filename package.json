@@ -72,7 +72,7 @@
     "@earendil-works/pi-tui": "0.79.6",
     "tsx": "4.22.4",
     "typescript": "6.0.3",
-    "vitest": "4.1.9"
+    "vitest": "4.1.10"
   },
   "engines": {
     "node": ">=22.19.0"
