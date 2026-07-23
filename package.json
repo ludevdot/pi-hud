@@ -71,7 +71,7 @@
     "@earendil-works/pi-coding-agent": "0.79.6",
     "@earendil-works/pi-tui": "0.79.6",
     "tsx": "4.22.4",
-    "typescript": "6.0.3",
+    "typescript": "7.0.2",
     "vitest": "4.1.9"
   },
   "engines": {
